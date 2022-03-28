@@ -1,0 +1,76 @@
+warning: LF will be replaced by CRLF in Server/src/accounts/accounts.controller.ts.
+The file will have its original line endings in your working directory
+[1mdiff --git a/Server/src/accounts/accounts.controller.ts b/Server/src/accounts/accounts.controller.ts[m
+[1mindex fa28bf1..aa526f1 100644[m
+[1m--- a/Server/src/accounts/accounts.controller.ts[m
+[1m+++ b/Server/src/accounts/accounts.controller.ts[m
+[36m@@ -4,7 +4,7 @@[m [mimport { Accounts } from './schemas/accounts.schema';[m
+ @Controller('account')[m
+ export class AccountsController {[m
+      constructor(private readonly AccountsService: AccountsService){} [m
+[31m-    /* @Post("/add")[m
+[32m+[m[32m     @Post("/add")[m
+     async createaccount(@Res() response, @Body() account: Accounts) {[m
+         const newaccount = await this.AccountsService.create(account);[m
+         return response.status(HttpStatus.CREATED).json({[m
+[36m@@ -19,5 +19,5 @@[m [mexport class AccountsController {[m
+     return response.status(HttpStatus.OK).json({[m
+         AccountId,[m
+     });[m
+[31m-  } */[m
+[32m+[m[32m  }[m
+ }[m
+\ No newline at end of file[m
+[1mdiff --git a/Server/src/accounts/accounts.repository.ts b/Server/src/accounts/accounts.repository.ts[m
+[1mindex 2332e89..e848567 100644[m
+[1m--- a/Server/src/accounts/accounts.repository.ts[m
+[1m+++ b/Server/src/accounts/accounts.repository.ts[m
+[36m@@ -4,11 +4,11 @@[m [mimport { FilterQuery, Model } from "mongoose";[m
+ import { Accounts, AccountsDocument } from "./schemas/accounts.schema";[m
+ @Injectable()[m
+ export class AccountsRepository {[m
+[31m-    //constructor(@InjectModel(Accounts.name) private accountsModel: Model<AccountsDocument>) {} [m
+[31m-    /* async find(usersFilterQuery: FilterQuery<Accounts>): Promise<Accounts[]> {[m
+[32m+[m[32m    constructor(@InjectModel(Accounts.name) private accountsModel: Model<AccountsDocument>) {}[m[41m [m
+[32m+[m[32m     async find(usersFilterQuery: FilterQuery<Accounts>): Promise<Accounts[]> {[m
+         return this.accountsModel.find(usersFilterQuery);[m
+     }[m
+     async findOne(usersFilterQuery: FilterQuery<Accounts>): Promise<Accounts[]> {[m
+         return this.accountsModel.findOne(usersFilterQuery);[m
+[31m-    } */[m
+[32m+[m[32m    }[m[41m [m
+ }[m
+\ No newline at end of file[m
+[1mdiff --git a/Server/src/accounts/schemas/accounts.schema.ts b/Server/src/accounts/schemas/accounts.schema.ts[m
+[1mindex 4a52b42..e76ed27 100644[m
+[1m--- a/Server/src/accounts/schemas/accounts.schema.ts[m
+[1m+++ b/Server/src/accounts/schemas/accounts.schema.ts[m
+[36m@@ -3,18 +3,24 @@[m [mimport { Document } from 'mongoose';[m
+ export type AccountsDocument = Accounts & Document;[m
+ @Schema()[m
+ export class Accounts {[m
+[31m-  @Prop({[m
+[32m+[m[32m  @Prop[m
+[32m+[m[32m  ({[m
+     type: String,[m
+     require: true,[m
+     min: 3,[m
+[31m-    max: 20,})[m
+[31m-  name:string;[m
+[32m+[m[32m    max: 20,[m
+[32m+[m[32m  })[m
+[32m+[m[32m    name:string;[m
+[32m+[m
+   @Prop({[m
+     type: String,[m
+     required: true,[m
+     max: 50,[m
+[31m-    unique: true,})[m
+[32m+[m[32m    unique: true,[m
+[32m+[m[32m  })[m
+[32m+[m
+   email:string;[m
+[32m+[m
+   @Prop({[m
+     type: String,[m
+     default: "",[m

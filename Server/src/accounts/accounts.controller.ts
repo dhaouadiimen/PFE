@@ -4,7 +4,7 @@ import { Accounts } from './schemas/accounts.schema';
 @Controller('account')
 export class AccountsController {
      constructor(private readonly AccountsService: AccountsService){} 
-    /* @Post("/add")
+     @Post("/add")
     async createaccount(@Res() response, @Body() account: Accounts) {
         const newaccount = await this.AccountsService.create(account);
         return response.status(HttpStatus.CREATED).json({
@@ -19,5 +19,5 @@ export class AccountsController {
     return response.status(HttpStatus.OK).json({
         AccountId,
     });
-  } */
+  }
 }
