@@ -11,13 +11,21 @@ export class AccountsController {
             newaccount
         })
     }
+
+    @Get()
+    async fetchAllAccounts( @Res() response) {
+        const Listeaccounts = await this.AccountsService.readAll();
+        return response.status(HttpStatus.OK).json({
+          Listeaccounts
+        })
+      }
+
     // get Account with AccountId 
     @Get('/:id')
-  async findAccount(@Res() response, @Param('id') id) {
-    const AccountId =
-      await this.AccountsService.getAccount(id);
+  async findAccount(@Res() response, @Param('id') id) {  
+    const Account =await this.AccountsService.findaccount(id);
     return response.status(HttpStatus.OK).json({
-        AccountId,
+        Account,
     });
   }
 }

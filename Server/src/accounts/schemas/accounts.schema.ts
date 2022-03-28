@@ -6,7 +6,7 @@ export class Accounts {
   @Prop
   ({
     type: String,
-    require: true,
+    required: true,
     min: 3,
     max: 20,
   })
@@ -26,9 +26,5 @@ export class Accounts {
     default: "",
   })
   profilePicture:string;
-      
-
-      @Prop()
-      timestamps: true
 }
 export const AccountsSchema = SchemaFactory.createForClass(Accounts);

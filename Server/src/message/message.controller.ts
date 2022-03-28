@@ -65,13 +65,6 @@ export class MessageController {
   */
 
 
-  @Get('/allmsj')
-  async getlistmsj(@Res() response) {
-    const listmessages = await this.messageService.readAll();
-    return response.status(HttpStatus.OK).json({
-      listmessages,
-    });
-  }
   //////////////////////////////////////// 2/return list messages by discussion id xxxx//////////////////////////////////////
   @Get('/:id')
   async findById(@Res() response, @Param('id') id) {
@@ -82,20 +75,23 @@ export class MessageController {
       listemessagesBydiscussion,
     });
   }
-  @Post("/postMsg")
+  @Post("/add")
   async createmessageindiscussion(@Res() response, @Body() message: Message) {
    let senderId;
     let discussionId ;
-   let content;
+   let content:string;
    let receiverId;
     
     if (message.senderId && message.discussionId && message.content) {
       // DATA VERIFICATION
       //search senderId exist in accounts or no
      senderId = await this.accountsService.findaccount(message.senderId);
-      discussionId = await this.discussionsService.finddiscu(discussionId);
-      if (!senderId) {
-        throw new HttpException(`senderId not found`, HttpStatus.NOT_FOUND);
+     discussionId = await this.discussionsService.finddiscu(message.discussionId);
+      if (!senderId) 
+      {
+        throw new HttpException
+        (`senderId not found`, 
+        HttpStatus.NOT_FOUND);
       }
         else if (!discussionId) {
           throw new HttpException(
@@ -103,12 +99,12 @@ export class MessageController {
             HttpStatus.NOT_FOUND,
           );
         }
-      else if (content.length === 0) {
+       /* else if (content.length=== 0) {
         throw new HttpException(
           `content of message is empty !!!`,
           HttpStatus.NOT_FOUND,
         );
-      }
+      }  */
 
                                                   /*PROCESS */
 

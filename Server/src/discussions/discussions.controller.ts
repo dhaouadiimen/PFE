@@ -39,9 +39,8 @@ export class DiscussionsController {
     } */
 
   ///////////////////////////////////////////////// get liste discussions of user with accountid
-  @Get('/:accountId')
+  @Get('/:id')
   async findDiscuByIdUser(@Res() response, @Param('id') id) {
-   
    const DiscuByAccountId = await this.discussionsService.getListeDiscuByAccountid(id);
    return response.status(HttpStatus.CREATED).json({
     DiscuByAccountId,

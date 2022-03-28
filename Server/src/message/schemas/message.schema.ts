@@ -5,7 +5,6 @@ export type MessageDocument = Message & Document;
 
 @Schema()
 export class Message {
-
   @Prop()
   discussionId: string;
 

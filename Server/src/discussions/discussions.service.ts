@@ -16,18 +16,15 @@ export class DiscussionsService {
         return this.discussionModel.create({parts});
     }
         
-        async finddiscu(discussion: string): Promise<Accounts> {
-          return  this.discussionModel.findOne({_id: discussion});
+        async finddiscu(discussionId: string): Promise<Accounts> {
+          return  this.discussionModel.findOne({_id: discussionId});
       }
 
      async getListeDiscuByAccountid(accountId): Promise<any> {
-        console.log("*****************",accountId)
          return this.discussionModel.find({
            parts:{$in:[accountId]},
          });
     }  
-
-      
       }
 
 

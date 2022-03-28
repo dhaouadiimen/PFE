@@ -1,9 +1,10 @@
-import { Injectable } from "@nestjs/common";
+import { HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { v4 as uuidv4 } from 'uuid';
 import { Accounts, AccountsDocument } from "./schemas/accounts.schema";
 import { AccountsRepository } from "./accounts.repository";
 import { Model } from "mongoose";
+import { HttpException } from '@nestjs/common';
 
 
 
@@ -15,16 +16,21 @@ export class AccountsService {
         const newAccount= new this.accountsModel(account);
         return newAccount.save();
     }
-    async findaccount(account: string): Promise<Accounts> {
-        return  this.accountsModel.findOne({_id: account});
+    async findaccount(accountId: string): Promise<Accounts> {
+        if(accountId){
+            return  this.accountsModel.findOne({_id: accountId});
+        }
+        else {
+            throw new HttpException(
+              `AccountId Not found!!!!!!`,
+              HttpStatus.NOT_FOUND,
+            );
+          
+       }
        
     }
-    async getAccount(accountId): Promise<any> {
-        
-          const Account=  await this.accountsModel.find(accountId).exec();
-          
-        
-          }
- 
+    async readAll(): Promise<Accounts[]> {
+        return this.accountsModel.find().exec();
+    }
 
 }
