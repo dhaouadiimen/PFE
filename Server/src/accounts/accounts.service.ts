@@ -5,12 +5,13 @@ import { Accounts, AccountsDocument } from "./schemas/accounts.schema";
 import { AccountsRepository } from "./accounts.repository";
 import { Model } from "mongoose";
 
+
+
 @Injectable()
 export class AccountsService {
-
-    constructor(@InjectModel(Accounts.name) private accountsModel: Model<AccountsDocument>) {}
-
-    async create(account: Accounts): Promise<Accounts> {
+    constructor(@InjectModel(Accounts.name) private accountsModel: Model<AccountsDocument>
+    ) {}
+     async create(account: Accounts): Promise<Accounts> {
         const newAccount= new this.accountsModel(account);
         return newAccount.save();
     }
@@ -24,6 +25,6 @@ export class AccountsService {
           
         
           }
-
+ 
 
 }

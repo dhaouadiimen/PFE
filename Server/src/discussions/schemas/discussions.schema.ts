@@ -7,9 +7,6 @@ export class Discussions
 
   @Prop([String])
   parts: string[];
- /*  
-  @Prop()
-  discussionId:string; */
  
 }
 export const DiscussionsSchema = SchemaFactory.createForClass(Discussions);

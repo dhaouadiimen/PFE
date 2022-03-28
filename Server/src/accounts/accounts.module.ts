@@ -6,11 +6,11 @@ import { Accounts, AccountsSchema } from './schemas/accounts.schema';
 import { AccountsRepository } from './Accounts.repository';
 
 @Module({
-  imports: [
+   imports: [
     MongooseModule.forFeature([
-      { name: Accounts.name, schema: AccountsSchema },
+       { name: Accounts.name, schema: AccountsSchema }, 
     ]),
-  ],
+  ], 
   providers: [AccountsService, AccountsRepository],
   controllers: [AccountsController],
   exports:[AccountsService]

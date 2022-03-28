@@ -7,12 +7,6 @@ import { InjectModel } from '@nestjs/mongoose';
 @Injectable()
 export class MessageService {
   constructor(@InjectModel(Message.name) private messageModel: Model<MessageDocument>) {}
-  
-  async createmessage(message: Message): Promise<Message> {
-    const newmsj = new this.messageModel(message);
-    return newmsj.save();
-  }
- 
 
   async readAll(): Promise<Message[]> {
     return await this.messageModel.find().exec();
@@ -21,12 +15,18 @@ export class MessageService {
   //return list messages by discussion_id xxxx
 
   async getlistmessagesByDiscussion(DiscussionId): Promise<any> {
-try{
-  //const messages=  await this.messageModel.find({ DiscussionId: Req.params.DiscussionId, }).exec();
-  //Res.status(200).json(messages);
-} catch(err) {
-  //Res.status(500).json(err);
-}
+  const messages=  await this.messageModel.find({ DiscussionId: DiscussionId }).exec();
   }
+
+  async createmessage(senderId,discussionId,content): Promise<Message> {
+    const newmsj = new this.messageModel(senderId,discussionId,content);
+    return newmsj.save();
+  }
+// create message in discussion Id 
+/* @params{
+  // senderId,discuId , content 
+} */
+ 
+   
 
 };

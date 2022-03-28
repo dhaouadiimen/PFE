@@ -9,17 +9,11 @@ export class Message {
   @Prop()
   discussionId: string;
 
-  /* @Prop()
-  recieverID: string; */
-
   @Prop()
   senderId: string;
 
   @Prop()
   content: string;
-
-  /* @Prop()
-  Status: string;  */
 
   @Prop()
   timestamps:true; 

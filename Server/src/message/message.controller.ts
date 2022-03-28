@@ -1,18 +1,7 @@
-import {
-  Controller,
-  Get,
-  HttpStatus,
-  Res,
-  Body,
-  Post,
-  Param,
-} from '@nestjs/common';
+import{Controller,Get,HttpStatus,Res,Body,Post,Param} from '@nestjs/common';
 import { Message } from './schemas/Message.schema';
-import { Accounts } from '../accounts/schemas/accounts.schema';
 import { MessageService } from './message.service';
-import { response } from 'express';
 import { HttpException } from '@nestjs/common';
-import { Discussions } from '../discussions/schemas/discussions.schema';
 import { AccountsService } from 'src/accounts/accounts.service';
 import { DiscussionsService } from 'src/discussions/discussions.service';
 
@@ -75,19 +64,7 @@ export class MessageController {
   }
   */
 
-  // add msj in discu exist
-  @Post('/create')
-  //(@Res() response, @Body() message: Message) {
-  /* async postMessageIndiscussion(@Res() response, @Body() message: Message) {
-    //@Body() complete body
-    const newmsj = await this.messageService.createmessage(senderId,discussionId,content);
-    try{
-      response.status(HttpStatus.CREATED).json({newmsj,});
-    }
-    catch {
-      throw new HttpException(`error posting message`, HttpStatus.FORBIDDEN);
-    }
-  } */
+
   @Get('/allmsj')
   async getlistmsj(@Res() response) {
     const listmessages = await this.messageService.readAll();
@@ -105,36 +82,28 @@ export class MessageController {
       listemessagesBydiscussion,
     });
   }
-  @Post('/add')
+  @Post("/postMsg")
   async createmessageindiscussion(@Res() response, @Body() message: Message) {
-    let senderId;
-    let discussionId;
-    let content;
+   let senderId;
+    let discussionId ;
+   let content;
+   let receiverId;
+    
     if (message.senderId && message.discussionId && message.content) {
       // DATA VERIFICATION
       //search senderId exist in accounts or no
-      senderId = await this.accountsService.findaccount(message.senderId);
+     senderId = await this.accountsService.findaccount(message.senderId);
+      discussionId = await this.discussionsService.finddiscu(discussionId);
       if (!senderId) {
         throw new HttpException(`senderId not found`, HttpStatus.NOT_FOUND);
       }
-      /* if (recieverID) {
-        recieverID = await this.accountsService.findaccount(recieverID);
-        if (!recieverID) {
-          throw new HttpException(`receiverId not found`, HttpStatus.NOT_FOUND);
-        }
-      } */
-      if (discussionId) {
-        //discussionId = await Discussions.findOne({ _id: discussionId });
-        discussionId = await this.discussionsService.finddiscu(discussionId);
-        if (!discussionId) {
+        else if (!discussionId) {
           throw new HttpException(
             `discussionId not found`,
             HttpStatus.NOT_FOUND,
           );
         }
-      }
-
-      if (content.length === 0) {
+      else if (content.length === 0) {
         throw new HttpException(
           `content of message is empty !!!`,
           HttpStatus.NOT_FOUND,
@@ -143,24 +112,25 @@ export class MessageController {
 
                                                   /*PROCESS */
 
-// 01) test if sender and receiver have a discussion between us or no ????
-// 01)1) discussion between sender and receiver exist
-
-  if(discussionId==true){
+  if(discussionId){
     /* @Params 
     {
       discussionId
       senderId
       content
     } */
-    this.postMessageIndiscussion(senderId,discussionId,content);
+    const newmsj = await this.messageService.createmessage(senderId,discussionId,content);
+    try{
+      response.status(HttpStatus.CREATED).json({newmsj});
+    }
+    catch {
+      throw new HttpException(`error posting message`, HttpStatus.FORBIDDEN);
+    }
+    
   }
-  // 01)2) discussion between sender and receiver does notttt exist!!!
-  else{
-    //create a new discussion and add the parts to it (sender + receiver) 
-    const newdiscussion = await this.discussionsService.creatediscussion(senderId,recieverID);
-    //postMessageIndiscussion() 
-    this.postMessageIndiscussion(senderId,discussionId,content);
+  else{ 
+    const newdiscussion = await this.discussionsService.creatediscussion(receiverId,senderId);
+    this.messageService.createmessage(senderId,discussionId,content);
     
   }
 } 

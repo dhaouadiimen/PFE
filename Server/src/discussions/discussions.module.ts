@@ -6,7 +6,8 @@ import { Discussions, DiscussionsSchema } from "./schemas/discussions.schema";
 import { DiscussionRepository } from "./discussions.repository";
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Discussions.name, schema: DiscussionsSchema }])],
+  imports: [MongooseModule.forFeature([
+    { name: Discussions.name, schema: DiscussionsSchema }])],
   providers: [DiscussionsService,DiscussionRepository],
   controllers: [DiscussionsController],
   exports:[DiscussionsService]
