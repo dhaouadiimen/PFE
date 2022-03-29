@@ -79,58 +79,101 @@ export class MessageController {
   async createmessageindiscussion(@Res() response, @Body() message: Message) {
    let senderId;
     let discussionId ;
-   let content:string;
-   let receiverId;
+   let content;
     
     if (message.senderId && message.discussionId && message.content) {
       // DATA VERIFICATION
       //search senderId exist in accounts or no
-     senderId = await this.accountsService.findaccount(message.senderId);
-     discussionId = await this.discussionsService.finddiscu(message.discussionId);
-      if (!senderId) 
-      {
-        throw new HttpException
-        (`senderId not found`, 
-        HttpStatus.NOT_FOUND);
-      }
-        else if (!discussionId) {
-          throw new HttpException(
-            `discussionId not found`,
-            HttpStatus.NOT_FOUND,
-          );
-        }
-       /* else if (content.length=== 0) {
+    
+      
+         if (content=="") {
         throw new HttpException(
           `content of message is empty !!!`,
           HttpStatus.NOT_FOUND,
         );
-      }  */
+      }  
 
                                                   /*PROCESS */
-
-  if(discussionId){
+  
     /* @Params 
     {
       discussionId
       senderId
       content
     } */
-    const newmsj = await this.messageService.createmessage(senderId,discussionId,content);
-    try{
-      response.status(HttpStatus.CREATED).json({newmsj});
-    }
-    catch {
-      throw new HttpException(`error posting message`, HttpStatus.FORBIDDEN);
-    }
-    
+    // verif senderId is parts  in discussion for send the message 
+  
+const check = await this.discussionsService.checkSenderExisting(message.discussionId,message.senderId);
+console.log('yyyyyyyyyyyyyyyyzzzzzzzzz',check);
+console.log("checkkkkkkkkkk",Object.keys(check).length);
+if(check && check!=null){
+  const newmsj  =  await this.messageService.createmessage(message.senderId,message.discussionId,message.content);
+  return response.status(HttpStatus.CREATED).json(newmsj);
+}    
+else{
+  return response.status(HttpStatus.NOT_FOUND).json({message:"faddddddddddddyttttttttttttt"});
   }
-  else{ 
-    const newdiscussion = await this.discussionsService.creatediscussion(receiverId,senderId);
-    this.messageService.createmessage(senderId,discussionId,content);
-    
+}
   }
-} 
-    }
+
+    async createmessageinNewdiscussion(@Res() response, @Body() message: Message) {
+      let senderId;
+       let discussionId ;
+      let content:string;
+      let receiverId;
+       
+       if (message.senderId && message.discussionId && message.content) {
+         // DATA VERIFICATION
+         //search senderId exist in accounts or no
+        senderId = await this.accountsService.findaccount(message.senderId);
+        discussionId = await this.discussionsService.finddiscu(message.discussionId);
+         if (!senderId) 
+         {
+           throw new HttpException
+           (`senderId not found`, 
+           HttpStatus.NOT_FOUND);
+         }
+           else if (!discussionId) {
+             throw new HttpException(
+               `discussionId not found`,
+               HttpStatus.NOT_FOUND,
+             );
+           }
+          /* else if (content.length=== 0) {
+           throw new HttpException(
+             `content of message is empty !!!`,
+             HttpStatus.NOT_FOUND,
+           );
+         }  */
+   
+                                                     /*PROCESS */
+     discussionId = await this.discussionsService.finddiscu(message.discussionId);
+     if(discussionId){
+       /* @Params 
+       {
+         discussionId
+         senderId
+         content
+       } */
+       // verif senderId is parts for send the message 
+   const check = await this.discussionsService.checkSenderExisting(discussionId,senderId);
+   if(check){
+     const newmsj = await this.messageService.createmessage(senderId,discussionId,content);
+     try{
+       response.status(HttpStatus.CREATED).json({newmsj});
+     }
+     catch {
+       throw new HttpException(`error posting message`, HttpStatus.FORBIDDEN);
+     }
+   }    
+     }
+     else{ 
+       const newdiscussion = await this.discussionsService.creatediscussion(receiverId,senderId);
+       this.messageService.createmessage(senderId,discussionId,content);
+       
+     }
+   } 
+       }
     
-  }
+      }
 

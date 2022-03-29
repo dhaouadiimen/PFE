@@ -5,6 +5,7 @@ import { Accounts, AccountsDocument } from "./schemas/accounts.schema";
 import { AccountsRepository } from "./accounts.repository";
 import { Model } from "mongoose";
 import { HttpException } from '@nestjs/common';
+import mongoose from "mongoose";
 
 
 
@@ -17,18 +18,17 @@ export class AccountsService {
         return newAccount.save();
     }
     async findaccount(accountId: string): Promise<Accounts> {
-        if(accountId){
-            return  this.accountsModel.findOne({_id: accountId});
+        console.log('***********************',accountId);
+        try{
+          return await  this.accountsModel.findOne({ _id:  accountId }).exec();
         }
-        else {
-            throw new HttpException(
-              `AccountId Not found!!!!!!`,
-              HttpStatus.NOT_FOUND,
-            );
-          
-       }
+        catch(err){
+return null ;
+        }
        
     }
+
+    
     async readAll(): Promise<Accounts[]> {
         return this.accountsModel.find().exec();
     }

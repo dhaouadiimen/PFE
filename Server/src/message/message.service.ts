@@ -16,7 +16,14 @@ export class MessageService {
   }
 
   async createmessage(senderId,discussionId,content): Promise<Message> {
-    const newmsj = new this.messageModel(senderId,discussionId,content);
+    console.log("ppppppppppppppppppp",senderId)
+    console.log("77777777777777777777777777777",discussionId)
+    let ms=new Message()
+    ms.discussionId=discussionId
+  ms.content=content
+  ms.senderId=senderId
+    const newmsj = new this.messageModel(ms);
+    console.log("hihihiiiiiiiiiiiiiiiiiiiiiii",newmsj)
     return newmsj.save();
   }
 // create message in discussion Id 

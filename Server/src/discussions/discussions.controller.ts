@@ -10,6 +10,7 @@ import {
   Put,
   Req,
 } from '@nestjs/common';
+import { AccountsService } from 'src/accounts/accounts.service';
 import { MessageService } from 'src/message/message.service';
 import { DiscussionsService } from './discussions.service';
 import { Discussions } from './schemas/discussions.schema';
@@ -17,11 +18,33 @@ import { createDiscussion } from './tdo/creatediscussion.dto';
 @Controller('discussions')
 export class DiscussionsController {
   constructor(
-    private readonly discussionsService: DiscussionsService
+    private readonly discussionsService: DiscussionsService,
+    private readonly accountssService: AccountsService
   ) {}
 ///////////////////////// route of create discussion ///////////////////////
   @Post('create')
   async createnewdiscussion(@Res() response, @Body() discussions: createDiscussion) {
+    if(discussions.senderId =="" || discussions.receiverId ==""){
+      return response.status(HttpStatus.NOT_FOUND).json({
+        message:'sender Id or receiver Id Not found'
+      })
+
+    }
+    const foundSenderId=await this.accountssService.findaccount(discussions.senderId);
+    if(!foundSenderId){
+      return response.status(HttpStatus.NOT_FOUND).json({
+        message:'sender Id or receiver Id Not found'
+      })
+
+    }
+    const foundReceiverId=await this.accountssService.findaccount(discussions.receiverId);
+    if(!foundReceiverId){
+      return response.status(HttpStatus.NOT_FOUND).json({
+        message:'sender Id or receiver Id Not found'
+      })
+
+    }
+
     const newdiscussion = await this.discussionsService.creatediscussion(discussions.senderId,discussions.receiverId);
     return response.status(HttpStatus.CREATED).json({
       newdiscussion,

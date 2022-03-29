@@ -14,7 +14,5 @@ export class Message {
   @Prop()
   content: string;
 
-  @Prop()
-  timestamps:true; 
 }
 export const MessageSchema = SchemaFactory.createForClass(Message);
