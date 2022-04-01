@@ -15,10 +15,16 @@ export class DiscussionsService {
       const parts=[senderId,receiverId]
         return this.discussionModel.create({parts});
     }
-        
-        async finddiscu(discussionId: string): Promise<Accounts> {
-          return  this.discussionModel.findOne({_id: discussionId});
+    async finddiscu(discussionId: string): Promise<Discussions> {
+      console.log('***********************',discussionId);
+      try{
+        return await  this.discussionModel.findOne({_id: discussionId}).exec();
       }
+      catch(err){
+return null ;
+      }
+     
+  }
 
      async getListeDiscuByAccountid(accountId): Promise<any> {
          return  await this.discussionModel.find({
@@ -29,20 +35,22 @@ export class DiscussionsService {
     }  
     async checkSenderExisting(discussionId,senderId): Promise<any> {
       console.log('discuuuuuuuuuuuuuuuuuuuuuuuuuuuu',discussionId);
+        const a = await this.discussionModel.findOne({ parts: { $in: senderId }, _id: discussionId  }).exec();
+        console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",a);
+        //console.log("object",Object.keys(a).length);
+        return a ;
       
-      try{
-        const a = await this.discussionModel.findOne({ parts: { $in: senderId } }, { _id: discussionId } ).exec();
-  
-        console.log("galbyyyyyyyyyyyyyyyyyy",a);
-        console.log("object",Object.keys(a).length);
-        return  a ;
       }
-      catch(err){
-return null;
+      async checkdiscussionbetweensenderandreceiver(senderId,receiverId){
+        
+        const a = await this.discussionModel.findOne( { $and: [ {parts: { $in: senderId } }, { parts: { $in:receiverId }} ] } ).exec();
+        return a ;
+    
+    
       }
       
  }
-      }
+      
 
 
       

@@ -12,7 +12,7 @@ export class Message {
   senderId: string;
 
   @Prop()
-  content: string;
+  content: '';
 
 }
 export const MessageSchema = SchemaFactory.createForClass(Message);

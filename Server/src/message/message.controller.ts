@@ -4,6 +4,8 @@ import { MessageService } from './message.service';
 import { HttpException } from '@nestjs/common';
 import { AccountsService } from 'src/accounts/accounts.service';
 import { DiscussionsService } from 'src/discussions/discussions.service';
+import { createMessage } from './tdo/createmessage.tdo';
+import { Discussions } from 'src/discussions/schemas/discussions.schema';
 
 @Controller('message')
 export class MessageController {
@@ -75,18 +77,41 @@ export class MessageController {
       listemessagesBydiscussion,
     });
   }
+
+
   @Post("/add")
-  async createmessageindiscussion(@Res() response, @Body() message: Message) {
+      /* @Params 
+    {
+      discussionId
+      senderId
+      content
+
+    } */
+  async createmessageinExistingdiscussion(@Res() response, @Body() message: Message) {
    let senderId;
-    let discussionId ;
-   let content;
-    
-    if (message.senderId && message.discussionId && message.content) {
+   let discussionId ;
       // DATA VERIFICATION
       //search senderId exist in accounts or no
-    
+      senderId = await this.accountsService.findaccount(message.senderId);
+      discussionId = await this.discussionsService.finddiscu(message.discussionId);
+      console.log("discuId",message.discussionId);
+       if (!senderId) 
+       {
+         throw new HttpException
+         (`senderId not found`, 
+         HttpStatus.NOT_FOUND);
+         
+       }
       
-         if (content=="") {
+         else if (!discussionId) {
+          console.log("discussionIdNot foUND",message.discussionId);
+           throw new HttpException(
+             `discussionId not found`,
+             HttpStatus.NOT_FOUND,
+           );
+         }
+    
+         if (message.content==null|| message.content=='') {
         throw new HttpException(
           `content of message is empty !!!`,
           HttpStatus.NOT_FOUND,
@@ -95,85 +120,46 @@ export class MessageController {
 
                                                   /*PROCESS */
   
-    /* @Params 
-    {
-      discussionId
-      senderId
-      content
-    } */
-    // verif senderId is parts  in discussion for send the message 
+
+    // verif senderId is parts  in discussionId for send the message 
+  
   
 const check = await this.discussionsService.checkSenderExisting(message.discussionId,message.senderId);
-console.log('yyyyyyyyyyyyyyyyzzzzzzzzz',check);
-console.log("checkkkkkkkkkk",Object.keys(check).length);
+console.log('check',check);
+//console.log("checkkkkkkkkkk",Object.keys(check).length);
+//discu existe and part exist in this discu 
 if(check && check!=null){
   const newmsj  =  await this.messageService.createmessage(message.senderId,message.discussionId,message.content);
   return response.status(HttpStatus.CREATED).json(newmsj);
 }    
 else{
-  return response.status(HttpStatus.NOT_FOUND).json({message:"faddddddddddddyttttttttttttt"});
-  }
-}
+  return response.status(HttpStatus.NOT_FOUND).json({message:"Can not post msj "});
   }
 
-    async createmessageinNewdiscussion(@Res() response, @Body() message: Message) {
+  }
+                       /////////////////////////////////NewDiscussion///////////////////////////////
+
+  @Post("/add/new")
+    async createmessageinNewdiscussion(@Res() response, @Body() message:createMessage) {
       let senderId;
-       let discussionId ;
-      let content:string;
       let receiverId;
-       
-       if (message.senderId && message.discussionId && message.content) {
-         // DATA VERIFICATION
-         //search senderId exist in accounts or no
-        senderId = await this.accountsService.findaccount(message.senderId);
-        discussionId = await this.discussionsService.finddiscu(message.discussionId);
-         if (!senderId) 
-         {
-           throw new HttpException
-           (`senderId not found`, 
-           HttpStatus.NOT_FOUND);
-         }
-           else if (!discussionId) {
-             throw new HttpException(
-               `discussionId not found`,
-               HttpStatus.NOT_FOUND,
-             );
-           }
-          /* else if (content.length=== 0) {
-           throw new HttpException(
-             `content of message is empty !!!`,
-             HttpStatus.NOT_FOUND,
-           );
-         }  */
-   
-                                                     /*PROCESS */
-     discussionId = await this.discussionsService.finddiscu(message.discussionId);
-     if(discussionId){
-       /* @Params 
-       {
-         discussionId
-         senderId
-         content
-       } */
-       // verif senderId is parts for send the message 
-   const check = await this.discussionsService.checkSenderExisting(discussionId,senderId);
-   if(check){
-     const newmsj = await this.messageService.createmessage(senderId,discussionId,content);
-     try{
-       response.status(HttpStatus.CREATED).json({newmsj});
-     }
-     catch {
-       throw new HttpException(`error posting message`, HttpStatus.FORBIDDEN);
-     }
-   }    
-     }
-     else{ 
-       const newdiscussion = await this.discussionsService.creatediscussion(receiverId,senderId);
-       this.messageService.createmessage(senderId,discussionId,content);
-       
-     }
-   } 
+      let content;
+      let discussionId ;
+      const verify = await this.discussionsService.checkdiscussionbetweensenderandreceiver(message.senderId,message.receiverId);
+      console.log(verify)
+     
+      // if null === not part in any discussion
+      if(!verify){
+        let createNewDiscuAndaddParts : Discussions;
+        createNewDiscuAndaddParts = await this.discussionsService.creatediscussion(message.senderId,message.receiverId);
+        console.log('"""""""""""""""""',createNewDiscuAndaddParts);
+        // recuparation id discu 
+        const Msj= await this.messageService.createmessage(senderId,createNewDiscuAndaddParts,content);
+      }
+        
+      else{
+        const Msj= await this.messageService.createmessage(senderId,discussionId,content);
        }
     
       }
-
+    }
