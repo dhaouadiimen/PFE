@@ -75,8 +75,7 @@ export class MessageController {
   @Get('/:id')
   async findById(@Res() response, @Param('id') id) {
     console.log('discu id ', id);
-    const listemessagesBydiscussion =
-      await this.messageService.getlistmessagesByDiscussion(id);
+    const listemessagesBydiscussion = await this.messageService.getlistmessagesByDiscussionId(id);
     return response.status(HttpStatus.OK).json({
       listemessagesBydiscussion,
     });
