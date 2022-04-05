@@ -29,21 +29,21 @@ return null ;
      async getListeDiscuByAccountid(accountId): Promise<any> {
          return  await this.discussionModel.find({
            /* parts:{$in:[accountId]}, */
-           parts:{ $in: accountId } 
-
+           parts:{ $in: accountId }
          });
     }  
     async checkSenderExisting(discussionId,senderId): Promise<any> {
       console.log('discuuuuuuuuuuuuuuuuuuuuuuuuuuuu',discussionId);
         const a = await this.discussionModel.findOne({ parts: { $in: senderId }, _id: discussionId  }).exec();
         console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",a);
-        //console.log("object",Object.keys(a).length);
         return a ;
       
       }
       async checkdiscussionbetweensenderandreceiver(senderId,receiverId){
         
-        const a = await this.discussionModel.findOne( { $and: [ {parts: { $in: senderId } }, { parts: { $in:receiverId }} ] } ).exec();
+        const a = await this.discussionModel.findOne
+        ( { $and: [ {parts: { $in: senderId } }, { parts: { $in:receiverId }} ] } )
+        .exec();
         return a ;
     
     

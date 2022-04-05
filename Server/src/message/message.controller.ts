@@ -4,8 +4,12 @@ import { MessageService } from './message.service';
 import { HttpException } from '@nestjs/common';
 import { AccountsService } from 'src/accounts/accounts.service';
 import { DiscussionsService } from 'src/discussions/discussions.service';
-import { createMessage } from './tdo/createmessage.tdo';
+import { createMessage} from './tdo/createmessage.tdo';
 import { Discussions } from 'src/discussions/schemas/discussions.schema';
+import { createNewDiscuAndaddParts } from 'src/discussions/tdo/discutdo.tdo';
+import { createNewDiscuAndaddPart } from './tdo/createnewdiscuAndaddPartstdo.tdo';
+import { clearConfigCache } from 'prettier';
+import { async } from 'rxjs';
 
 @Controller('message')
 export class MessageController {
@@ -78,7 +82,6 @@ export class MessageController {
     });
   }
 
-
   @Post("/add")
       /* @Params 
     {
@@ -90,6 +93,7 @@ export class MessageController {
   async createmessageinExistingdiscussion(@Res() response, @Body() message: Message) {
    let senderId;
    let discussionId ;
+   let content=message.content; ;
       // DATA VERIFICATION
       //search senderId exist in accounts or no
       senderId = await this.accountsService.findaccount(message.senderId);
@@ -111,7 +115,7 @@ export class MessageController {
            );
          }
     
-         if (message.content==null|| message.content=='') {
+         else if (message.content==null|| message.content=='') {
         throw new HttpException(
           `content of message is empty !!!`,
           HttpStatus.NOT_FOUND,
@@ -145,21 +149,50 @@ else{
       let receiverId;
       let content;
       let discussionId ;
-      const verify = await this.discussionsService.checkdiscussionbetweensenderandreceiver(message.senderId,message.receiverId);
-      console.log(verify)
-     
-      // if null === not part in any discussion
-      if(!verify){
-        let createNewDiscuAndaddParts : Discussions;
-        createNewDiscuAndaddParts = await this.discussionsService.creatediscussion(message.senderId,message.receiverId);
-        console.log('"""""""""""""""""',createNewDiscuAndaddParts);
-        // recuparation id discu 
-        const Msj= await this.messageService.createmessage(senderId,createNewDiscuAndaddParts,content);
-      }
-        
-      else{
-        const Msj= await this.messageService.createmessage(senderId,discussionId,content);
+      senderId = await this.accountsService.findaccount(message.senderId);
+      receiverId= await this.accountsService.findaccount(message.receiverId);
+      if (!senderId) 
+       {
+         throw new HttpException
+         (`senderId not founddd`, 
+         HttpStatus.NOT_FOUND);
+         
        }
-    
+       if (!receiverId) 
+       {
+         throw new HttpException
+         (`receiverId not found`, 
+         HttpStatus.NOT_FOUND);
+         
+       }
+      
+         if (message.content==null|| message.content=='') {
+        throw new HttpException(
+          `content of message is empty !!!`,
+          HttpStatus.NOT_FOUND,
+        );
+      }  
+      const verify = await this.discussionsService.checkdiscussionbetweensenderandreceiver(message.senderId,message.receiverId);
+      console.log('verify',verify)
+      //console.log('verify',verify._id);
+      // if null === not part in any discussionnnnnnnnnn
+      if(!verify){
+       
+        let createNewDiscuAndaddParts : Discussions;
+       createNewDiscuAndaddParts = await this.discussionsService.creatediscussion(message.senderId,message.receiverId);
+        console.log('""""""createNewDiscuAndaddParts"""""""""""',createNewDiscuAndaddParts);
+
+        const DiscussionId =createNewDiscuAndaddParts._id;
+        console.log('""""""""idddddddddddddddd"""""""""',DiscussionId);
+     
+        const Msj= await this.messageService.createmessage(message.senderId,DiscussionId,message.content);
+        return response.status(HttpStatus.CREATED).json(Msj);
+      } 
+     
+      else{
+        const discussionId= verify._id;
+        const Msj= await this.messageService.createmessage(message.senderId,discussionId,message.content);
+        return response.status(HttpStatus.CREATED).json(Msj);
+       }
       }
     }

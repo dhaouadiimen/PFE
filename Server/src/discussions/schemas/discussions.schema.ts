@@ -4,7 +4,8 @@ export type DiscussionsDocument = Discussions & Document;
 @Schema()
 export class Discussions 
 {
-
+  
+  _id:string;
   @Prop([String])
   parts: string[];
  

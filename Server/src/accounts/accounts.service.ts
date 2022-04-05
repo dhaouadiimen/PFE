@@ -11,8 +11,7 @@ import mongoose from "mongoose";
 
 @Injectable()
 export class AccountsService {
-    constructor(@InjectModel(Accounts.name) private accountsModel: Model<AccountsDocument>
-    ) {}
+    constructor(@InjectModel(Accounts.name) private accountsModel: Model<AccountsDocument>) {}
      async create(account: Accounts): Promise<Accounts> {
         const newAccount= new this.accountsModel(account);
         return newAccount.save();

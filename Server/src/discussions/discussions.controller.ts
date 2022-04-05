@@ -52,21 +52,14 @@ export class DiscussionsController {
   }
 
 
-  // recuperer la liste des disscussions
-  /* @Get()
-    async fetchAllDiscussions( @Res() response) {
-        const Listediscu = await this.discussionsService.readAll();
-        return response.status(HttpStatus.OK).json({
-            Listediscu
-        })
-    } */
 
   ///////////////////////////////////////////////// get liste discussions of user with accountid
+  
   @Get('/:id')
-  async findDiscuByIdUser(@Res() response, @Param('id') id) {
-   const DiscuByAccountId = await this.discussionsService.getListeDiscuByAccountid(id);
+  async findAllDiscussionsByAccountId(@Res() response, @Param('id') id) {
+   const ListeDiscuByAccountId = await this.discussionsService.getListeDiscuByAccountid(id);
    return response.status(HttpStatus.CREATED).json({
-    DiscuByAccountId,
+    ListeDiscuByAccountId,
   });
 }
 } 

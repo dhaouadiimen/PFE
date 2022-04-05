@@ -1,3 +1,4 @@
-export class createNewDiscuAndaddParts{
-   _id:string;
+export class createNewDiscuAndaddPart{
+  parts: string[];
+  _id:string;
   }
