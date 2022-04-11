@@ -87,7 +87,6 @@ export class MessageController {
       discussionId
       senderId
       content
-
     } */
   async createmessageinExistingdiscussion(@Res() response, @Body() message: Message) {
    let senderId;
