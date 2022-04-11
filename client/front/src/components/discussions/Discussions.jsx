@@ -5,32 +5,36 @@ import axios from 'axios';
 import discussion from './discussion.css'
 
 export default function Discussion({discussion,currentUser}) {
-   /* const[account,setAccount]=useState(null);
- 
-  useEffect(()=>{
-    const friendId = discussion.parts.find((p) => p !== currentUser._id);
-    const getAccount = async()=>{
-      try{
-        //get account bel id 
-        const res = await axios("/account/accountId" + friendId);
-        console.log((res));
-      }
-      catch(err){
-console.log(err);
-      }
+
+   const [account,setAccount]=useState({});
+   const PF= process.env.REACT_APP_PUBLIC_FOLDER;
+ useEffect(()=>{
+   const friendId = discussion.parts.find((m) => m!==currentUser._id);
+   const getAccount = async ()=>{
+     try{
+      const res = await axios.get("http://localhost:3000/account/"+friendId);
+       console.log("friendUseer",res);
+       setAccount(res.data.Account);
+     }
+     catch(err){
+      console.log("err");
     }
-    getAccount();
   }
-  ,[currentUser,discussion]);  */
+  getAccount()
+ },
+
+ [currentUser,discussion])
+
+
   return (
     <div className="discussion">
-      <img 
-      // src={account?.profilePicture?account.profilePicture: "person/noAvatar.png"}
-       src={require('../../assets/person/5.jpeg')}  
+      <img
+      src={account?.profilePicture ? account.profilePicture: PF+"person/noAvatar.png"}
+        
         className="discussionImg"
         alt=""
       />
-      <span className="discussionName">Alex johnnnn</span>
+      <span className="discussionName">{account?.name}</span> 
     </div>
   );
 }
