@@ -18,57 +18,7 @@ export class MessageController {
     private readonly accountsService: AccountsService,
     private readonly discussionsService: DiscussionsService,
   ) {}
-  /*
-  @Post("/postMsg")
-  async createmessage(@Res() response, @Body() body: Object) {
-    if(body.senderId && (body.recieverID || body.discussionID ) && body.msg){
-      // DATA VERIFICATION 
-      let discussion = null;
-      let reciever = null;
-      //search senderId exist in account or no 
-      let sender = await Accounts.findOne({_id: body.senderId});
-      //id of sender does not exist
-      if(!sender){
-        throw INPUT_ERROR;
-      }
-      if(body.recieverID){
-        reciever = await Account.findOne({_id: body.recieverID});
-        if(!reciever) throw INPUT_ERROR;
-      }
-      
-      else if(body.discussionID)
-      {
-        discussion = await Discussion.findOne({_id: body.discussionID})
-        if(!discussion) throw INPUT_ERROR;
-      }
-
-      // PROCESS  
-      //discu not null = discu exist 
-      if(discussion){
-        // appel a la fct post msj 
-        postMessage(discussion, body.msg);
-      }
-      else if(discussion = check_existing_discussion(sender, reciever))  
-      {
-        postMessage(discussion, body.msg);
-      }
-      else{
-        discussion = await this.discussionsService.create(sender, reciever, body.msg);
-        const parts = await this.partsService.addPart(discussion, sender);
-        const parts2 = await this.partsService.addPart(discussion, reciver);
-        const newmsj = await this.messageService.createmsj(discussion, body.msg);
-      }
-
-    }
-    else{
-      throw INPUT_ERROR;
-    }
-      const newmsj = await this.messageService.createmsj(message);
-      return response.status(HttpStatus.CREATED).json({
-          newmsj
-      })
-  }
-  */
+  
 
 
   //////////////////////////////////////// 2/return list messages by discussion id xxxx//////////////////////////////////////

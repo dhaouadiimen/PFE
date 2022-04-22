@@ -6,13 +6,28 @@ import './Messenger.css'
 import {AuthContext} from "../../../src/context/AuthContext"; 
 import { useContext, useEffect, useRef, useState } from "react";
 import axios from 'axios'; 
+import {io} from "socket.io-client";
+import Modaladdmessage from '../../components/Modal/Modaladdmessage';
 export default function Messenger() {
 const [newMessage,setNewMessage]=useState("");
 const [discussions,setDiscussions]=useState([]);
 const [messages,setMessages]=useState([]);
 const [currentChat,setCurrentChat]=useState(null);
+const [socket,setSocket]=useState(null);
 const {account} =useContext(AuthContext); 
 const scrollRef = useRef();
+
+useEffect(()=>{
+  socket?.on("welcome",message=>{
+    console.log(message); 
+  })
+},[socket])
+
+useEffect(()=>{
+  setSocket(io("ws://localhost:8900"));
+},[])
+console.log(socket);
+
  useEffect(()=>{
   // return all discussion from the current user 
   const getdiscussions= async ()=>{
@@ -53,9 +68,6 @@ useEffect(() => {
   getMessages();
 }, [currentChat]);
 
-
-console.log("messageeeeeeeeeeeeeeeees",messages);
-
 const handleSubmit = async (e) => {
   e.preventDefault();
   const message = {
@@ -68,9 +80,13 @@ const handleSubmit = async (e) => {
     const res = await axios.post("http://localhost:3000/message/add", message);
     setMessages([...messages, res.data]);
     setNewMessage("");
-  } catch (err) {
+  } 
+  catch (err) {
     console.log(err);
   } }
+
+
+
 
 return (
   <>
@@ -90,6 +106,7 @@ return (
         </div>
       </div>
       <div className="chatBox">
+     
         <div className="chatBoxWrapper">
          {
            currentChat ? (
@@ -110,7 +127,7 @@ return (
                   onChange={(e) => setNewMessage(e.target.value)}
                   value={newMessage}
                 ></textarea>
-                <button className="chatSubmitButton"   onClick={handleSubmit} >
+                <button className="chatSubmitButton"  onClick={handleSubmit} >
                   Send
                 </button>
                 </div>
@@ -129,9 +146,13 @@ return (
       </div>
       <div className="chatOnline">
         <div className="chatOnlineWrapper">
+     
+
         </div>
       </div>
     </div>
+    
   </>
+  
 );
             }
