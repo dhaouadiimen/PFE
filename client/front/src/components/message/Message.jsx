@@ -2,6 +2,7 @@ import React from 'react'
 import './message.css'
 import { format } from 'timeago.js' 
 export default function Message({message,currentuser}) {
+
   return (
     <div className={message.senderId ==currentuser ? "message own" : "message"}>
     <div className="messageTop">

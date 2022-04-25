@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Date, Document } from 'mongoose';
 export type MessageDocument = Message & Document;
-@Schema()
+
+@Schema({ timestamps: true})
 export class Message {
   @Prop()
   discussionId: string;
@@ -11,6 +12,7 @@ export class Message {
 
   @Prop()
   content: '';
+
   
 }
 export const MessageSchema = SchemaFactory.createForClass(Message);

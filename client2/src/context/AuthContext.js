@@ -1,5 +1,5 @@
 import { createContext } from "react";
-const account = {_id:"624c1a8705cb50cb26441301",surname:"John sevalien"};
+const account = {_id:"626682d43561b8c83d70acd3",surname:"John sevalien"};
 
 export const AuthContext = createContext(account);
 export const AuthContextProvider = ({ children }) => {

@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import Messenger from './pages/Messenger/Messenger';
 import { useContext } from "react";
+import 'react-notifications/lib/notifications.css';
 import { AuthContext } from "./context/AuthContext";
 import Modaladdmessage from './components/Modal/Modaladdmessage';
 function App() {

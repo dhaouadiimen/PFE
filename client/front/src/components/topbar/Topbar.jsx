@@ -5,20 +5,15 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import Modaladdmessage from "../Modal/Modaladdmessage";
 import { useEffect } from "react";
-
+import {NotificationContainer, NotificationManager} from 'react-notifications';
+import {io} from "socket.io-client";
 export default function Topbar() {
   const [modalisopen,setIsopenModal]=useState(false);
   
   const {account} =useContext(AuthContext); 
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
+ 
 
-useEffect(()=>{
-})
-  const addNewmessage = async (e) => {
-    /* setModal(true);
-    <Modaladdmessage></Modaladdmessage> */
-    alert("hhhhhhhhhhhhhhh")
-    };
     
   return (
     <div className="topbarContainer">
@@ -28,6 +23,7 @@ useEffect(()=>{
           <span className="logo">InMailing</span>
         </Link>
       </div>
+      <NotificationContainer/>
       <div className="topbarCenter">
         <div className="searchbar">
           <Search className="searchIcon" />

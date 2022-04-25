@@ -1,3 +1,5 @@
+
+//socket client : socket 
 import React from 'react'
 import Discussion from '../../components/discussions/Discussions'
 import Message from '../../components/message/Message'
@@ -6,27 +8,45 @@ import './Messenger.css'
 import {AuthContext} from "../../../src/context/AuthContext"; 
 import { useContext, useEffect, useRef, useState } from "react";
 import axios from 'axios'; 
-import {io} from "socket.io-client";
-import Modaladdmessage from '../../components/Modal/Modaladdmessage';
 export default function Messenger() {
 const [newMessage,setNewMessage]=useState("");
 const [discussions,setDiscussions]=useState([]);
 const [messages,setMessages]=useState([]);
 const [currentChat,setCurrentChat]=useState(null);
-const [socket,setSocket]=useState(null);
+//const [socket,setSocket]=useState(null);
 const {account} =useContext(AuthContext); 
+const [arrivalMessage, setArrivalMessage] = useState({});
 const scrollRef = useRef();
 
-useEffect(()=>{
-  socket?.on("welcome",message=>{
-    console.log(message); 
-  })
-},[socket])
+/*
 
-useEffect(()=>{
-  setSocket(io("ws://localhost:8900"));
-},[])
-console.log(socket);
+ useEffect(() => {
+  socket.current.emit("addUser", account._id);
+  socket.current.on("getUsers", users=> {
+console.log("users",users);
+  })
+}, [account]); 
+
+
+ useEffect(() => {
+  socket.current.on("getMessage", (data) => {
+    setArrivalMessage({
+      sender: data.senderId,
+      content: data.content,
+      createdAt: Date.now(),
+    });
+  });
+}, []); 
+console.log("sooooooooocket",socket);
+
+
+ useEffect(() => {
+  arrivalMessage &&
+    currentChat?.parts.includes(arrivalMessage.senderId) &&
+    setMessages((prev) => [...prev, arrivalMessage]);
+}, [arrivalMessage, currentChat]);  */
+
+
 
  useEffect(()=>{
   // return all discussion from the current user 
@@ -147,7 +167,7 @@ return (
       <div className="chatOnline">
         <div className="chatOnlineWrapper">
      
-
+       
         </div>
       </div>
     </div>

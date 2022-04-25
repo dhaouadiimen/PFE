@@ -2,6 +2,9 @@ import { Provider } from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css'
+import 'react-notifications/lib/notifications.css';
+import {NotificationContainer, NotificationManager} from 'react-notifications';
+import {io} from "socket.io-client";
 import {
     BrowserRouter,
     Routes,
@@ -13,7 +16,8 @@ import { AuthContext } from "./context/AuthContext";
 import Modaladdmessage from './components/Modal/Modaladdmessage';
 import { persistor,store } from './Redux/Store';
 function App() {
-    //const { account } = useContext(AuthContext);
+   
+        
     return (
 <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>

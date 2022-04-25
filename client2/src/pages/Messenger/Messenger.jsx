@@ -6,14 +6,53 @@ import './Messenger.css'
 import {AuthContext} from "../../../src/context/AuthContext"; 
 import { useContext, useEffect, useRef, useState } from "react";
 import axios from 'axios'; 
-import Modaladdmessage from '../../components/Modal/Modaladdmessage'
+import {io} from "socket.io-client";
+import Modaladdmessage from '../../components/Modal/Modaladdmessage';
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 export default function Messenger() {
 const [newMessage,setNewMessage]=useState("");
 const [discussions,setDiscussions]=useState([]);
 const [messages,setMessages]=useState([]);
 const [currentChat,setCurrentChat]=useState(null);
 const {account} =useContext(AuthContext); 
+const [arrivalMessage, setArrivalMessage] = useState(null);
 const scrollRef = useRef();
+const socket = io("http://localhost:3000", {
+  reconnectionDelayMax: 10000,
+  auth: {
+    token: "123"
+  },
+  query: {
+    "my-key": "my-value"
+  }
+});
+
+/* useEffect(() => {
+  socket.current.on("getMessage", (data) => {
+    setArrivalMessage({
+      sender: data.senderId,
+      content: data.content,
+      createdAt: Date.now(),
+    });
+  });
+}, []);
+ */
+
+//console.log(socket);
+
+/* useEffect(() => {
+  arrivalMessage &&
+    currentChat?.members.includes(arrivalMessage.sender) &&
+    setMessages((prev) => [...prev, arrivalMessage]);
+}, [arrivalMessage, currentChat]); 
+
+useEffect(() => {
+  socket.current.emit("addUser", account._id);
+  socket.current.on("getUsers", users=> {
+    console.log("users",users);
+  })
+}, [account]); 
+ */
  useEffect(()=>{
   // return all discussion from the current user 
   const getdiscussions= async ()=>{
@@ -54,9 +93,6 @@ useEffect(() => {
   getMessages();
 }, [currentChat]);
 
-
-console.log("messageeeeeeeeeeeeeeeees",messages);
-
 const handleSubmit = async (e) => {
   e.preventDefault();
   const message = {
@@ -69,9 +105,13 @@ const handleSubmit = async (e) => {
     const res = await axios.post("http://localhost:3000/message/add", message);
     setMessages([...messages, res.data]);
     setNewMessage("");
-  } catch (err) {
+  } 
+  catch (err) {
     console.log(err);
   } }
+
+
+
 
 return (
   <>
@@ -112,7 +152,7 @@ return (
                   onChange={(e) => setNewMessage(e.target.value)}
                   value={newMessage}
                 ></textarea>
-                <button className="chatSubmitButton"   onClick={handleSubmit} >
+                <button className="chatSubmitButton"  onClick={handleSubmit} >
                   Send
                 </button>
                 </div>
@@ -131,11 +171,13 @@ return (
       </div>
       <div className="chatOnline">
         <div className="chatOnlineWrapper">
-     
+        <NotificationContainer/>
 
         </div>
       </div>
     </div>
+    
   </>
+  
 );
             }

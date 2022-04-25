@@ -10,6 +10,7 @@ import { createNewDiscuAndaddParts } from 'src/discussions/tdo/discutdo.tdo';
 import { createNewDiscuAndaddPart } from './tdo/createnewdiscuAndaddPartstdo.tdo';
 import { clearConfigCache } from 'prettier';
 import { async } from 'rxjs';
+import { EventsGateway } from 'src/events/events.gateway';
 
 @Controller('message')
 export class MessageController {
@@ -17,6 +18,7 @@ export class MessageController {
     private readonly messageService: MessageService,
     private readonly accountsService: AccountsService,
     private readonly discussionsService: DiscussionsService,
+    private readonly ServiceNotif: EventsGateway,
   ) {}
   
 
@@ -82,6 +84,7 @@ console.log('check',check);
 //discu existe and part exist in this discu 
 if(check && check!=null){
   const newmsj  =  await this.messageService.createmessage(message.senderId,message.discussionId,message.content);
+  this.ServiceNotif.addnotif(newmsj);
   return response.status(HttpStatus.CREATED).json(newmsj);
 }    
 else{
