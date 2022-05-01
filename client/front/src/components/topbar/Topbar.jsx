@@ -37,11 +37,11 @@ export default function Topbar() {
         <div className="topbarIcons">
           <div className="topbarIconItem">
             <Chat />
-            <span className="topbarIconBadge">2</span>
+            <span className="topbarIconBadge">0</span>
           </div>
           <div className="topbarIconItem">
             <Notifications />
-            <span className="topbarIconBadge">1</span>
+            <span className="topbarIconBadge">0</span>
           </div>
          
           <div className="icon-add">

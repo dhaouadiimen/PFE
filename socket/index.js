@@ -1,9 +1,6 @@
-
+/* 
 import { io } from "socket.io-client";
 //socket server : io 
-
-
-
 
 let users = [];
 
@@ -47,4 +44,4 @@ io.on("connection", (socket) => {
     removeUser(socket.id);
     io.emit("getUsers", users);
   });
-});
+}); 

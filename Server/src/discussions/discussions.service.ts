@@ -48,6 +48,15 @@ return null ;
     
     
       }
+      async getlistepartsfromdiscussion(discussionId){
+        
+        const a = await this.discussionModel.findOne
+        ( {_id:discussionId} )
+        .exec();
+        return a ;
+    
+    
+      }
       
  }
       

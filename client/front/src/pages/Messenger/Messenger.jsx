@@ -8,25 +8,20 @@ import './Messenger.css'
 import {AuthContext} from "../../../src/context/AuthContext"; 
 import { useContext, useEffect, useRef, useState } from "react";
 import axios from 'axios'; 
+import {useDispatch } from 'react-redux';
+import {AutoRefreshDiscussion} from '../../Redux/Actions/discussion'
+import {AutoRefreshMessage} from '../../Redux/Actions/listeMessage'
 export default function Messenger() {
 const [newMessage,setNewMessage]=useState("");
 const [discussions,setDiscussions]=useState([]);
 const [messages,setMessages]=useState([]);
 const [currentChat,setCurrentChat]=useState(null);
-//const [socket,setSocket]=useState(null);
 const {account} =useContext(AuthContext); 
-const [arrivalMessage, setArrivalMessage] = useState({});
 const scrollRef = useRef();
+const dispatch = useDispatch();
 
-/*
-
- useEffect(() => {
-  socket.current.emit("addUser", account._id);
-  socket.current.on("getUsers", users=> {
-console.log("users",users);
-  })
-}, [account]); 
-
+ 
+/* 
 
  useEffect(() => {
   socket.current.on("getMessage", (data) => {
@@ -37,15 +32,15 @@ console.log("users",users);
     });
   });
 }, []); 
-console.log("sooooooooocket",socket);
+
 
 
  useEffect(() => {
   arrivalMessage &&
     currentChat?.parts.includes(arrivalMessage.senderId) &&
     setMessages((prev) => [...prev, arrivalMessage]);
-}, [arrivalMessage, currentChat]);  */
-
+}, [arrivalMessage, currentChat]);  
+ */
 
 
  useEffect(()=>{
@@ -77,10 +72,11 @@ useEffect(() => {
 
 
 useEffect(() => {
-  const getMessages = async () => {
+   const  getMessages = async () => {
     try {
       const res = await axios.get("http://localhost:3000/message/" + currentChat?._id);
       setMessages(res.data.listemessagesBydiscussion);
+      console.log("lst msjjj",res.data.listemessagesBydiscussion)
     } catch (err) {
       console.log(err);
     }
@@ -99,13 +95,17 @@ const handleSubmit = async (e) => {
   try {
     const res = await axios.post("http://localhost:3000/message/add", message);
     setMessages([...messages, res.data]);
+    console.log("res.dataaaaaaaaaaaaaaaaa",res.data)
     setNewMessage("");
+    const response = await axios.get("http://localhost:3000/message/" + currentChat?._id);
+      setMessages(response.data.listemessagesBydiscussion);
+    dispatch(AutoRefreshDiscussion(res.data));
+    dispatch(AutoRefreshMessage(response.data.listemessagesBydiscussion));
+    
   } 
   catch (err) {
     console.log(err);
   } }
-
-
 
 
 return (
@@ -147,7 +147,7 @@ return (
                   onChange={(e) => setNewMessage(e.target.value)}
                   value={newMessage}
                 ></textarea>
-                <button className="chatSubmitButton"  onClick={handleSubmit} >
+                <button className="chatSubmitButton"  onClick={handleSubmit}>
                   Send
                 </button>
                 </div>

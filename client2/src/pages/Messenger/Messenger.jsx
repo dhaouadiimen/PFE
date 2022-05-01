@@ -1,3 +1,5 @@
+
+//socket client : socket 
 import React from 'react'
 import Discussion from '../../components/discussions/Discussions'
 import Message from '../../components/message/Message'
@@ -6,28 +8,28 @@ import './Messenger.css'
 import {AuthContext} from "../../../src/context/AuthContext"; 
 import { useContext, useEffect, useRef, useState } from "react";
 import axios from 'axios'; 
-import {io} from "socket.io-client";
-import Modaladdmessage from '../../components/Modal/Modaladdmessage';
-import {NotificationContainer, NotificationManager} from 'react-notifications';
+import {useDispatch } from 'react-redux';
+import {AutoRefreshDiscussion} from '../../Redux/Actions/discussion'
+import {AutoRefreshMessage} from '../../Redux/Actions/listeMessage'
 export default function Messenger() {
 const [newMessage,setNewMessage]=useState("");
 const [discussions,setDiscussions]=useState([]);
 const [messages,setMessages]=useState([]);
 const [currentChat,setCurrentChat]=useState(null);
 const {account} =useContext(AuthContext); 
-const [arrivalMessage, setArrivalMessage] = useState(null);
 const scrollRef = useRef();
-const socket = io("http://localhost:3000", {
-  reconnectionDelayMax: 10000,
-  auth: {
-    token: "123"
-  },
-  query: {
-    "my-key": "my-value"
-  }
-});
+const dispatch = useDispatch();
+/*
 
-/* useEffect(() => {
+ useEffect(() => {
+  socket.current.emit("addUser", account._id);
+  socket.current.on("getUsers", users=> {
+console.log("users",users);
+  })
+}, [account]); 
+
+
+ useEffect(() => {
   socket.current.on("getMessage", (data) => {
     setArrivalMessage({
       sender: data.senderId,
@@ -35,24 +37,18 @@ const socket = io("http://localhost:3000", {
       createdAt: Date.now(),
     });
   });
-}, []);
- */
+}, []); 
+console.log("sooooooooocket",socket);
 
-//console.log(socket);
 
-/* useEffect(() => {
+ useEffect(() => {
   arrivalMessage &&
-    currentChat?.members.includes(arrivalMessage.sender) &&
+    currentChat?.parts.includes(arrivalMessage.senderId) &&
     setMessages((prev) => [...prev, arrivalMessage]);
-}, [arrivalMessage, currentChat]); 
+}, [arrivalMessage, currentChat]);  */
 
-useEffect(() => {
-  socket.current.emit("addUser", account._id);
-  socket.current.on("getUsers", users=> {
-    console.log("users",users);
-  })
-}, [account]); 
- */
+
+
  useEffect(()=>{
   // return all discussion from the current user 
   const getdiscussions= async ()=>{
@@ -82,10 +78,11 @@ useEffect(() => {
 
 
 useEffect(() => {
-  const getMessages = async () => {
+   const  getMessages = async () => {
     try {
       const res = await axios.get("http://localhost:3000/message/" + currentChat?._id);
       setMessages(res.data.listemessagesBydiscussion);
+      console.log("lst msjjj",res.data.listemessagesBydiscussion)
     } catch (err) {
       console.log(err);
     }
@@ -104,13 +101,17 @@ const handleSubmit = async (e) => {
   try {
     const res = await axios.post("http://localhost:3000/message/add", message);
     setMessages([...messages, res.data]);
+    console.log("res.dataaaaaaaaaaaaaaaaa",res.data)
     setNewMessage("");
+    const response = await axios.get("http://localhost:3000/message/" + currentChat?._id);
+      setMessages(response.data.listemessagesBydiscussion);
+    dispatch(AutoRefreshDiscussion(res.data));
+    dispatch(AutoRefreshMessage(response.data.listemessagesBydiscussion));
+    
   } 
   catch (err) {
     console.log(err);
   } }
-
-
 
 
 return (
@@ -152,7 +153,7 @@ return (
                   onChange={(e) => setNewMessage(e.target.value)}
                   value={newMessage}
                 ></textarea>
-                <button className="chatSubmitButton"  onClick={handleSubmit} >
+                <button className="chatSubmitButton"  onClick={handleSubmit}>
                   Send
                 </button>
                 </div>
@@ -164,15 +165,13 @@ return (
               Open a conversation to start a chat.
             </span>
               )  }
-   
-           
     
         </div>
       </div>
       <div className="chatOnline">
         <div className="chatOnlineWrapper">
-        <NotificationContainer/>
-
+     
+       
         </div>
       </div>
     </div>

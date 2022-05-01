@@ -84,7 +84,13 @@ console.log('check',check);
 //discu existe and part exist in this discu 
 if(check && check!=null){
   const newmsj  =  await this.messageService.createmessage(message.senderId,message.discussionId,message.content);
-  this.ServiceNotif.addnotif(newmsj);
+  let parts = await this.discussionsService.getlistepartsfromdiscussion(message.discussionId)
+ const data = {
+   newmsj : newmsj,
+   parts:parts.parts
+ }
+
+  this.ServiceNotif.sendprivatemsj(data);
   return response.status(HttpStatus.CREATED).json(newmsj);
 }    
 else{

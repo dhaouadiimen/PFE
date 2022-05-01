@@ -1,18 +1,21 @@
+import { Provider } from 'react-redux';
+import {PersistGate} from 'redux-persist/integration/react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css'
+import 'react-notifications/lib/notifications.css';
 import {
     BrowserRouter,
     Routes,
     Route,
 } from "react-router-dom";
 import Messenger from './pages/Messenger/Messenger';
-import { useContext } from "react";
-import 'react-notifications/lib/notifications.css';
-import { AuthContext } from "./context/AuthContext";
-import Modaladdmessage from './components/Modal/Modaladdmessage';
+import { persistor,store } from './Redux/Store';
 function App() {
-    //const { account } = useContext(AuthContext);
+   
+        
     return (
+<Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
          <
         BrowserRouter >
         <
@@ -23,6 +26,8 @@ function App() {
         /> <
         /Routes> <
         /BrowserRouter>
+        </PersistGate>
+        </Provider>
        
     );
 };
