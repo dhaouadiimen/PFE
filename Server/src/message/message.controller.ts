@@ -11,6 +11,7 @@ import { createNewDiscuAndaddPart } from './tdo/createnewdiscuAndaddPartstdo.tdo
 import { clearConfigCache } from 'prettier';
 import { async } from 'rxjs';
 import { EventsGateway } from 'src/events/events.gateway';
+import { Socket } from 'socket.io';
 
 @Controller('message')
 export class MessageController {
@@ -43,7 +44,7 @@ export class MessageController {
   async createmessageinExistingdiscussion(@Res() response, @Body() message: Message) {
    let senderId;
    let discussionId ;
-   let content=message.content; ;
+   let content=message.content ;
       // DATA VERIFICATION
       //search senderId exist in accounts or no
       senderId = await this.accountsService.findaccount(message.senderId);
@@ -76,8 +77,6 @@ export class MessageController {
   
 
     // verif senderId is parts  in discussionId for send the message 
-  
-  
 const check = await this.discussionsService.checkSenderExisting(message.discussionId,message.senderId);
 console.log('check',check);
 //console.log("checkkkkkkkkkk",Object.keys(check).length);
@@ -89,8 +88,7 @@ if(check && check!=null){
    newmsj : newmsj,
    parts:parts.parts
  }
-
-  this.ServiceNotif.sendprivatemsj(data);
+  this.ServiceNotif.sendprivatemsj(data,message.senderId);
   return response.status(HttpStatus.CREATED).json(newmsj);
 }    
 else{

@@ -24,19 +24,21 @@ socket.on('connect', function(client) {
   console.log("firsssssssssst",client)
   
 });
- //when disconnect 
+//when disconnect 
 socket.on('disconnect', function() {
   console.log('a user disconnected');
 });
 
+
+
 socket.emit("addUser",{
-  accountId :  "626682963561b8c83d70accf",
+  accountId :  "626682ad3561b8c83d70acd1",
 });
 
 // ecoute sur channel events 
 socket.on('events', function(data) {
-  console.log("affffffffffffffff",data)
-  NotificationManager.success('message', 'Sender');
+  NotificationManager.success('Notif', JSON.stringify(data));
+  //NotificationManager.success('Notif', senderId);
   //'Close after 1000ms'
   console.log('even1', data);
 });
@@ -72,3 +74,7 @@ reportWebVitals();
       content,
     });
  */
+
+
+  
+

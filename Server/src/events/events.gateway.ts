@@ -15,7 +15,13 @@ import { Logger } from '@nestjs/common';
 import { Socket } from 'socket.io';
 import { Server } from 'ws';
 import { AddUserConnectTdo } from './TDO/AddUserConnectTdo';
+import { AccountsSchema } from 'src/accounts/schemas/accounts.schema';
+import { createContext } from "react";
+import { MessageController } from '../message/message.controller';
+import { Message } from 'src/message/schemas/Message.schema';
+//export const AuthContext = createContext(account);
 let users = [];
+
 const addspecificUser = (accountId, socketId) => {
   console.log("//////////////////////",accountId,socketId);
   !users.some((account) => account.accountId === accountId) &&
@@ -36,14 +42,7 @@ export class EventsGateway  {
 
   server: Server;
    private logger: Logger = new Logger('MessageGateway');
-
-  @SubscribeMessage('events')
-  addnotif(@MessageBody() data: any): Observable<WsResponse<number>> {
-   return this.server.emit('events', data);
-    //return this.server.to("dD8CjUwMRSqPlmPJAAAC").emit('events', data);
-  }
-
-  public afterInit(server: Server): void {
+   public afterInit(server: Server): void {
     return this.logger.log('Init');
   }
   public handleDisconnect(client: Socket): void {
@@ -51,47 +50,55 @@ export class EventsGateway  {
   }
 
   public handleConnection(client: Socket): any {
-      //return this.logger.log(`Client connected: ${client.id}`);
+      return this.logger.log(`Client connected: ${client.id}`);
      //return this.server.emit(client.id);
-     //return client.emit('addUser', client.id);
-     console.log("rrrrrrrrrrrrrrrrrrrrrrrr",client.id)     
+     //return client.emit('addUser', client.id);   
+  }
+  @SubscribeMessage('events')
+  addnotif(@MessageBody() data: any): Observable<WsResponse<number>> {
+   return this.server.emit('events', data);
+    //return this.server.to("dD8CjUwMRSqPlmPJAAAC").emit('events', data);
   }
 
-  @SubscribeMessage('events')
-  handleEvent(client: Socket, data: string): string {
-    return data }
 
   @SubscribeMessage('addUser')
   addUser(@MessageBody() data : AddUserConnectTdo , @ConnectedSocket() client:Socket): void {
-    console.log("*********************aaaaaaaaaa****************",data);
+    console.log("*********************accountId****************",data);
     addspecificUser(data.accountId,client.id)
-    console.log("cli",client.id);
-   return this.logger.log("data",data)
     //return this.server.to("dD8CjUwMRSqPlmPJAAAC").emit('events', data);
   }
   @SubscribeMessage('sendprivatemsj')
-  sendprivatemsj(data: any ): void {
-    /* const user = getSpecificUser(accountId);
-    getSpecificUser(accountId); */
-    console.log("data",data)
-    //return this.server.to(user.socketId).emit('events', data);
-    console.log("userrrs",users);
-    return data.parts.map(p=>{
-      console.log("first",p)
-     const user= getSpecificUser(p) ;
-     console.log("userrr",user);
-     if (user){
-      return this.server.to(user.socketId).emit("events",data);
-     }
-    
+  sendprivatemsj(data: any, senderId : string): void {
+   console.log("sendeeeeeeeeer",senderId)
+    console.log("userrrrrrrrrrrrrrrrrrrrrrrrrrssssss",users);
+    console.log("parts",data.parts);
+    return data.parts.map(p=>
+      {
+     const userpart= getSpecificUser(p);
+     console.log("userpart",userpart);
+     console.log("userpart.accountId",userpart.accountId)
+     console.log("senderId",senderId)
+      if (userpart.accountId!==senderId){
+        return this.server.to(userpart.socketId).emit("events",data);
+       }
     })
   }
-@SubscribeMessage('getid')
+
+/* @SubscribeMessage('getid')
 handleEventid(client: Socket, data: string): string {
   console.log("client",client.id)
   return client.id;
-}
+} */
 
+
+/* 
+  @SubscribeMessage('events')
+  handleEvent(client: Socket, data: string): string
+  {
+    console.log("testttttttttttttttttttttt",data)
+    return data 
+    
+  } */
 
 
 
