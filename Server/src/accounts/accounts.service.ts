@@ -17,7 +17,7 @@ export class AccountsService {
         return newAccount.save();
     }
     async findaccount(accountId: string): Promise<Accounts> {
-        console.log('***********************',accountId);
+        //console.log('************AccountId***********',accountId);
         try{
           return await  this.accountsModel.findOne({ _id:  accountId }).exec();
         }

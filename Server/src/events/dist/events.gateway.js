@@ -22,45 +22,22 @@ var addspecificUser = function (accountId, socketId) {
 var getSpecificUser = function (accountId) {
     return users.find(function (account) { return account.accountId === accountId; });
 };
+var removeUser = function (socketId) {
+    users = users.filter(function (account) { return account.socketId !== socketId; });
+};
 var EventsGateway = /** @class */ (function () {
     function EventsGateway() {
         this.logger = new common_1.Logger('MessageGateway');
-        /* @SubscribeMessage('getid')
-        handleEventid(client: Socket, data: string): string {
-          console.log("client",client.id)
-          return client.id;
-        } */
-        /*
-          @SubscribeMessage('events')
-          handleEvent(client: Socket, data: string): string
-          {
-            console.log("testttttttttttttttttttttt",data)
-            return data
-            
-          } */
-        /*
-         @SubscribeMessage('msgToServer')
-        public handleMessage(client: Socket, payload: any): Promise<WsResponse<any>> {
-          return this.server.to(payload.room).emit('msgToClient', payload);
-        }
-      
-        @SubscribeMessage('joinRoom')
-        public joinRoom(client: Socket, room: string): void {
-          client.join(room);
-          client.emit('joinedRoom', room);
-        }
-      
-        @SubscribeMessage('leaveRoom')
-        public leaveRoom(client: Socket, room: string): void {
-          client.leave(room);
-          client.emit('leftRoom', room);
-        } */
     }
     EventsGateway.prototype.afterInit = function (server) {
         return this.logger.log('Init');
     };
     EventsGateway.prototype.handleDisconnect = function (client) {
-        return this.logger.log("Client disconnected: " + client.id);
+        //return this.logger.log(`Client disconnected: ${client.id}`);
+        console.log("*********************socketId****************", client.id);
+        removeUser(client.id);
+        //this.server.emit("getnewUsers",users);
+        console.log("*********************newUsers****************", users);
     };
     EventsGateway.prototype.handleConnection = function (client) {
         return this.logger.log("Client connected: " + client.id);
@@ -71,25 +48,35 @@ var EventsGateway = /** @class */ (function () {
         return this.server.emit('events', data);
         //return this.server.to("dD8CjUwMRSqPlmPJAAAC").emit('events', data);
     };
+    /* @SubscribeMessage('removeUser')
+   removeUser(@MessageBody() data : AddUserConnectTdo , @ConnectedSocket() client:Socket): void {
+     console.log("*********************socketId****************",client.id);
+     removeUser(client.id);
+     this.server.emit("getnewUsers",users);
+     console.log("*********************newUsers****************",users);
+ 
+   }  */
     EventsGateway.prototype.addUser = function (data, client) {
         console.log("*********************accountId****************", data);
         addspecificUser(data.accountId, client.id);
+        console.log("*********************ListeUsers****************", users);
         //return this.server.to("dD8CjUwMRSqPlmPJAAAC").emit('events', data);
     };
     EventsGateway.prototype.sendprivatemsj = function (data, senderId) {
         var _this = this;
-        console.log("sendeeeeeeeeer", senderId);
         console.log("userrrrrrrrrrrrrrrrrrrrrrrrrrssssss", users);
         console.log("parts", data.parts);
         return data.parts.map(function (p) {
             var userpart = getSpecificUser(p);
             console.log("userpart", userpart);
-            console.log("userpart.accountId", userpart.accountId);
-            console.log("senderId", senderId);
             if (userpart.accountId !== senderId) {
                 return _this.server.to(userpart.socketId).emit("events", data);
             }
         });
+    };
+    EventsGateway.prototype.handleEventid = function (client, data) {
+        console.log("client", client.id);
+        return client.id;
     };
     __decorate([
         websockets_1.WebSocketServer()
@@ -105,6 +92,9 @@ var EventsGateway = /** @class */ (function () {
     __decorate([
         websockets_1.SubscribeMessage('sendprivatemsj')
     ], EventsGateway.prototype, "sendprivatemsj");
+    __decorate([
+        websockets_1.SubscribeMessage('getid')
+    ], EventsGateway.prototype, "handleEventid");
     EventsGateway = __decorate([
         websockets_1.WebSocketGateway({
             cors: {
@@ -115,3 +105,28 @@ var EventsGateway = /** @class */ (function () {
     return EventsGateway;
 }());
 exports.EventsGateway = EventsGateway;
+/*
+  @SubscribeMessage('events')
+  handleEvent(client: Socket, data: string): string
+  {
+    console.log("testttttttttttttttttttttt",data)
+    return data
+    
+  } */
+/*
+ @SubscribeMessage('msgToServer')
+public handleMessage(client: Socket, payload: any): Promise<WsResponse<any>> {
+  return this.server.to(payload.room).emit('msgToClient', payload);
+}
+
+@SubscribeMessage('joinRoom')
+public joinRoom(client: Socket, room: string): void {
+  client.join(room);
+  client.emit('joinedRoom', room);
+}
+
+@SubscribeMessage('leaveRoom')
+public leaveRoom(client: Socket, room: string): void {
+  client.leave(room);
+  client.emit('leftRoom', room);
+} */

@@ -21,25 +21,32 @@ const socket = io("http://localhost:3000", {
 //when connect
 socket.on('connect', function(client) {
   console.log('a user connected');
-  console.log("firsssssssssst",client)
   
 });
  //when disconnect 
 socket.on('disconnect', function() {
-  console.log('a user disconnected');
-});
-
+  console.log('a user disconnected'); 
+  
+});/* 
+socket.on('removeUser', function(data) {  
+  console.log('dataaaaaaaaaaaaaaaaaa', data);
+}); */
+/* socket.emit("removeUser",{
+  
+}); */
 socket.emit("addUser",{
   accountId :  "626682963561b8c83d70accf",
 });
 
-// ecoute sur channel events 
 socket.on('events', function(data) {
   console.log("affffffffffffffff",data)
   NotificationManager.success('message', 'Sender');
   //'Close after 1000ms'
   console.log('even1', data);
 });
+
+
+
 
 console.log("sockeeeeeeeeeeeeet",socket.Socket);
 //console.log("Socket",socket.id);

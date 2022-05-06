@@ -88,8 +88,9 @@ if(check && check!=null){
    newmsj : newmsj,
    parts:parts.parts
  }
-  this.ServiceNotif.sendprivatemsj(data,message.senderId);
+ this.ServiceNotif.sendprivatemsj(data,message.senderId);
   return response.status(HttpStatus.CREATED).json(newmsj);
+  
 }    
 else{
   return response.status(HttpStatus.NOT_FOUND).json({message:"Can not post msj "});

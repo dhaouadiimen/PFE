@@ -31,6 +31,10 @@ const addspecificUser = (accountId, socketId) => {
 const getSpecificUser = (accountId) => {
   return users.find((account) => account.accountId === accountId);
 };
+
+const removeUser = (socketId) => {
+  users = users.filter((account) => account.socketId !== socketId);
+};
 @WebSocketGateway({
   cors: {
     origin: '*',
@@ -46,7 +50,12 @@ export class EventsGateway  {
     return this.logger.log('Init');
   }
   public handleDisconnect(client: Socket): void {
-    return this.logger.log(`Client disconnected: ${client.id}`);
+    //return this.logger.log(`Client disconnected: ${client.id}`);
+    console.log("*********************socketId****************",client.id);
+    removeUser(client.id);
+    //this.server.emit("getnewUsers",users);
+    console.log("*********************newUsers****************",users);
+   
   }
 
   public handleConnection(client: Socket): any {
@@ -59,37 +68,44 @@ export class EventsGateway  {
    return this.server.emit('events', data);
     //return this.server.to("dD8CjUwMRSqPlmPJAAAC").emit('events', data);
   }
+   /* @SubscribeMessage('removeUser')
+  removeUser(@MessageBody() data : AddUserConnectTdo , @ConnectedSocket() client:Socket): void {
+    console.log("*********************socketId****************",client.id);
+    removeUser(client.id);
+    this.server.emit("getnewUsers",users);
+    console.log("*********************newUsers****************",users);
 
+  }  */
 
   @SubscribeMessage('addUser')
   addUser(@MessageBody() data : AddUserConnectTdo , @ConnectedSocket() client:Socket): void {
     console.log("*********************accountId****************",data);
-    addspecificUser(data.accountId,client.id)
+    addspecificUser(data.accountId,client.id);
+    console.log("*********************ListeUsers****************",users);
     //return this.server.to("dD8CjUwMRSqPlmPJAAAC").emit('events', data);
   }
   @SubscribeMessage('sendprivatemsj')
   sendprivatemsj(data: any, senderId : string): void {
-   console.log("sendeeeeeeeeer",senderId)
     console.log("userrrrrrrrrrrrrrrrrrrrrrrrrrssssss",users);
     console.log("parts",data.parts);
     return data.parts.map(p=>
       {
      const userpart= getSpecificUser(p);
      console.log("userpart",userpart);
-     console.log("userpart.accountId",userpart.accountId)
-     console.log("senderId",senderId)
-      if (userpart.accountId!==senderId){
+      if (userpart.accountId!==senderId)
+      {
         return this.server.to(userpart.socketId).emit("events",data);
+
        }
     })
   }
 
-/* @SubscribeMessage('getid')
-handleEventid(client: Socket, data: string): string {
-  console.log("client",client.id)
-  return client.id;
-} */
-
+  @SubscribeMessage('getid')
+  handleEventid(client: Socket, data: string): string {
+    console.log("client",client.id)
+    return client.id;
+  } 
+}
 
 /* 
   @SubscribeMessage('events')
@@ -122,4 +138,3 @@ handleEventid(client: Socket, data: string): string {
 
   
 
-}

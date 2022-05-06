@@ -29,8 +29,6 @@ socket.on('disconnect', function() {
   console.log('a user disconnected');
 });
 
-
-
 socket.emit("addUser",{
   accountId :  "626682ad3561b8c83d70acd1",
 });

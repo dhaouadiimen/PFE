@@ -16,7 +16,7 @@ export class DiscussionsService {
         return this.discussionModel.create({parts});
     }
     async finddiscu(discussionId: string): Promise<Discussions> {
-      console.log('***********************',discussionId);
+      console.log('**********discussionId*************',discussionId);
       try{
         return await  this.discussionModel.findOne({_id: discussionId}).exec();
       }
