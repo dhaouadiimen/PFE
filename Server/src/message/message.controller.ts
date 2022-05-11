@@ -85,7 +85,6 @@ if(check && check!=null){
    parts:parts.parts
  }
 
- 
  response.status(HttpStatus.CREATED).json(newmsj);
  return this.ServiceNotif.sendprivatemsj(data,message.senderId); 
 
