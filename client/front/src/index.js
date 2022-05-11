@@ -7,8 +7,14 @@ import { AuthContextProvider } from './context/AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import {io} from "socket.io-client";
+import { AutoRefreshDiscussion } from './Redux/Actions/discussion';
+import { AutoRefreshMessage } from './Redux/Actions/listeMessage';
+import {useDispatch } from 'react-redux';
+
+const dispatch = useDispatch();
 
 const socket = io("http://localhost:3000", {
+ 
   reconnectionDelayMax: 10000,
   auth: {
     token: "123"
@@ -20,6 +26,7 @@ const socket = io("http://localhost:3000", {
 
 //when connect
 socket.on('connect', function(client) {
+
   console.log('a user connected');
   
 });
@@ -34,23 +41,28 @@ socket.on('removeUser', function(data) {
 /* socket.emit("removeUser",{
   
 }); */
+
 socket.emit("addUser",{
-  accountId :  "626682963561b8c83d70accf",
+  accountId :  "62752a322047424709a53c05",
 });
 
 socket.on('events', function(data) {
-  console.log("affffffffffffffff",data)
-  NotificationManager.success('message', 'Sender');
-  //'Close after 1000ms'
-  console.log('even1', data);
+  
+  console.log("--------------------------------------dataaaaaaaaaaaaaaaNotif",data);
+  NotificationManager.success(data.newmsj.content, data.newmsj.senderId);
+
+  // Notif +++++++++++++++++++++++++++ Refresh msjt ///////////////////////////////////
+  
+  dispatch(AutoRefreshDiscussion(data));
+  dispatch(AutoRefreshMessage());
 });
 
-
-
-
+socket.on('eventsupdated', function(data) {
+  //dispatch(AutoRefreshDiscussion(data));
+  //dispatch(AutoRefreshMessage(data.listemessagesBydiscussion));
+});
 console.log("sockeeeeeeeeeeeeet",socket.Socket);
 //console.log("Socket",socket.id);
-
 
 ReactDOM.render(
   <React.StrictMode>

@@ -8,9 +8,13 @@ import './Messenger.css'
 import {AuthContext} from "../../../src/context/AuthContext"; 
 import { useContext, useEffect, useRef, useState } from "react";
 import axios from 'axios'; 
-import {useDispatch } from 'react-redux';
 import {AutoRefreshDiscussion} from '../../Redux/Actions/discussion'
 import {AutoRefreshMessage} from '../../Redux/Actions/listeMessage'
+
+//import { socket } from 'socketUtil.js';
+import {useDispatch } from 'react-redux';
+
+
 export default function Messenger() {
 const [newMessage,setNewMessage]=useState("");
 const [discussions,setDiscussions]=useState([]);
@@ -19,28 +23,6 @@ const [currentChat,setCurrentChat]=useState(null);
 const {account} =useContext(AuthContext); 
 const scrollRef = useRef();
 const dispatch = useDispatch();
-
- 
-/* 
-
- useEffect(() => {
-  socket.current.on("getMessage", (data) => {
-    setArrivalMessage({
-      sender: data.senderId,
-      content: data.content,
-      createdAt: Date.now(),
-    });
-  });
-}, []); 
-
-
-
- useEffect(() => {
-  arrivalMessage &&
-    currentChat?.parts.includes(arrivalMessage.senderId) &&
-    setMessages((prev) => [...prev, arrivalMessage]);
-}, [arrivalMessage, currentChat]);  
- */
 
 
  useEffect(()=>{
@@ -83,6 +65,9 @@ useEffect(() => {
   };
   getMessages();
 }, [currentChat]);
+/////////////////////////////////////////////// POST MESSAGE ////////////////////////////////////// 
+
+
 
 const handleSubmit = async (e) => {
   e.preventDefault();
@@ -99,15 +84,24 @@ const handleSubmit = async (e) => {
     setNewMessage("");
     const response = await axios.get("http://localhost:3000/message/" + currentChat?._id);
       setMessages(response.data.listemessagesBydiscussion);
-    dispatch(AutoRefreshDiscussion(res.data));
-    dispatch(AutoRefreshMessage(response.data.listemessagesBydiscussion));
-    
+
+    /* dispatch(AutoRefreshDiscussion(res.data));
+    dispatch(AutoRefreshMessage(res.data.listemessagesBydiscussion)); 
+*/
   } 
   catch (err) {
     console.log(err);
   } }
 
+/* 
+  useEffect(() => {
+    socket.on('eventsupdated', payload => {
+        // update messages
+        useDispatch({ type: AutoRefreshDiscussion }, payload)
+    });
+});
 
+ */
 return (
   <>
     <Topbar />
@@ -147,7 +141,8 @@ return (
                   onChange={(e) => setNewMessage(e.target.value)}
                   value={newMessage}
                 ></textarea>
-                <button className="chatSubmitButton"  onClick={handleSubmit}>
+                <button className="chatSubmitButton"   onClick={handleSubmit}>
+            {/*     <button className="chatSubmitButton"   onClick={{handleSubmit},dispatch(AutoRefreshDiscussion()) ,dispatch(AutoRefreshMessage()) } > */}
                   Send
                 </button>
                 </div>

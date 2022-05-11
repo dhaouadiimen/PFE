@@ -12,7 +12,6 @@ exports.__esModule = true;
 exports.EventsGateway = void 0;
 var websockets_1 = require("@nestjs/websockets");
 var common_1 = require("@nestjs/common");
-//export const AuthContext = createContext(account);
 var users = [];
 var addspecificUser = function (accountId, socketId) {
     console.log("//////////////////////", accountId, socketId);
@@ -46,16 +45,7 @@ var EventsGateway = /** @class */ (function () {
     };
     EventsGateway.prototype.addnotif = function (data) {
         return this.server.emit('events', data);
-        //return this.server.to("dD8CjUwMRSqPlmPJAAAC").emit('events', data);
     };
-    /* @SubscribeMessage('removeUser')
-   removeUser(@MessageBody() data : AddUserConnectTdo , @ConnectedSocket() client:Socket): void {
-     console.log("*********************socketId****************",client.id);
-     removeUser(client.id);
-     this.server.emit("getnewUsers",users);
-     console.log("*********************newUsers****************",users);
- 
-   }  */
     EventsGateway.prototype.addUser = function (data, client) {
         console.log("*********************accountId****************", data);
         addspecificUser(data.accountId, client.id);
@@ -71,6 +61,7 @@ var EventsGateway = /** @class */ (function () {
             console.log("userpart", userpart);
             if (userpart.accountId !== senderId) {
                 return _this.server.to(userpart.socketId).emit("events", data);
+                // refresh liste msjs 
             }
         });
     };

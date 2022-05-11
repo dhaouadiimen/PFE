@@ -32,17 +32,14 @@ socket.on('disconnect', function() {
 
 
 socket.emit("addUser",{
-  accountId :  "626682d43561b8c83d70acd3",
+  accountId :  "62752a282047424709a53c03",
 });
 
 // ecoute sur channel events 
 socket.on('events', function(data) {
-  console.log("affffffffffffffff",data)
-  NotificationManager.success('Notif', 'message');
-  //'Close after 1000ms'
-  console.log('even1', data);
+  console.log("--------------------------------------dataaaaaaaaaaaaaaaNotif",data)
+  NotificationManager.success(data.newmsj.content, data.newmsj.senderId);
 });
-
 
 
 

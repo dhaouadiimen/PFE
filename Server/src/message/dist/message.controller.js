@@ -114,8 +114,8 @@ var MessageController = /** @class */ (function () {
                             newmsj: newmsj,
                             parts: parts.parts
                         };
-                        this.ServiceNotif.sendprivatemsj(data, message.senderId);
-                        return [2 /*return*/, response.status(common_1.HttpStatus.CREATED).json(newmsj)];
+                        response.status(common_1.HttpStatus.CREATED).json(newmsj);
+                        return [2 /*return*/, this.ServiceNotif.sendprivatemsj(data, message.senderId)];
                     case 6: return [2 /*return*/, response.status(common_1.HttpStatus.NOT_FOUND).json({ message: "Can not post msj " })];
                 }
             });

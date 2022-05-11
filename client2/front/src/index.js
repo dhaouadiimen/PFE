@@ -7,6 +7,9 @@ import { AuthContextProvider } from './context/AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import {io} from "socket.io-client";
+import {useDispatch } from 'react-redux';
+import { AutoRefreshDiscussion } from './Redux/Actions/discussion';
+import { AutoRefreshMessage } from './Redux/Actions/listeMessage';
 
 const socket = io("http://localhost:3000", {
   reconnectionDelayMax: 10000,
@@ -30,15 +33,17 @@ socket.on('disconnect', function() {
 });
 
 socket.emit("addUser",{
-  accountId :  "626682ad3561b8c83d70acd1",
+  accountId :  "62752a3f2047424709a53c07",
 });
 
 // ecoute sur channel events 
 socket.on('events', function(data) {
-  NotificationManager.success('Notif', JSON.stringify(data));
-  //NotificationManager.success('Notif', senderId);
-  //'Close after 1000ms'
-  console.log('even1', data);
+
+  console.log("--------------------------------------dataaaaaaaaaaaaaaaNotif",data)
+  NotificationManager.success(data.newmsj.content, data.newmsj.senderId);
+   ////////////////////////////////////////////////Refresh liste msj ////////////////////////////////////////////////////////
+/*    dispatch(AutoRefreshDiscussion(data));
+    dispatch(AutoRefreshMessage(data.listemessagesBydiscussion)); */
 });
 
 console.log("sockeeeeeeeeeeeeet",socket.Socket);

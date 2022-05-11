@@ -18,8 +18,8 @@ import { AddUserConnectTdo } from './TDO/AddUserConnectTdo';
 import { AccountsSchema } from 'src/accounts/schemas/accounts.schema';
 import { createContext } from "react";
 import { MessageController } from '../message/message.controller';
+import {MessageService} from '../message/message.service'
 import { Message } from 'src/message/schemas/Message.schema';
-//export const AuthContext = createContext(account);
 let users = [];
 
 const addspecificUser = (accountId, socketId) => {
@@ -63,20 +63,12 @@ export class EventsGateway  {
      //return this.server.emit(client.id);
      //return client.emit('addUser', client.id);   
   }
+
   @SubscribeMessage('events')
   addnotif(@MessageBody() data: any): Observable<WsResponse<number>> {
    return this.server.emit('events', data);
-    //return this.server.to("dD8CjUwMRSqPlmPJAAAC").emit('events', data);
   }
-   /* @SubscribeMessage('removeUser')
-  removeUser(@MessageBody() data : AddUserConnectTdo , @ConnectedSocket() client:Socket): void {
-    console.log("*********************socketId****************",client.id);
-    removeUser(client.id);
-    this.server.emit("getnewUsers",users);
-    console.log("*********************newUsers****************",users);
-
-  }  */
-
+  
   @SubscribeMessage('addUser')
   addUser(@MessageBody() data : AddUserConnectTdo , @ConnectedSocket() client:Socket): void {
     console.log("*********************accountId****************",data);
@@ -94,11 +86,12 @@ export class EventsGateway  {
      console.log("userpart",userpart);
       if (userpart.accountId!==senderId)
       {
-        return this.server.to(userpart.socketId).emit("events",data);
-
+        return this.server.to(userpart.socketId).emit("events",data); 
+        // refresh liste msjs 
        }
     })
   }
+
 
   @SubscribeMessage('getid')
   handleEventid(client: Socket, data: string): string {

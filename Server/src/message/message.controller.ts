@@ -55,9 +55,7 @@ export class MessageController {
          throw new HttpException
          (`senderId not found`, 
          HttpStatus.NOT_FOUND);
-         
        }
-      
          else if (!discussionId) {
           console.log("discussionIdNot foUND",message.discussionId);
            throw new HttpException(
@@ -74,8 +72,6 @@ export class MessageController {
       }  
 
                                                   /*PROCESS */
-  
-
     // verif senderId is parts  in discussionId for send the message 
 const check = await this.discussionsService.checkSenderExisting(message.discussionId,message.senderId);
 console.log('check',check);
@@ -83,14 +79,20 @@ console.log('check',check);
 //discu existe and part exist in this discu 
 if(check && check!=null){
   const newmsj  =  await this.messageService.createmessage(message.senderId,message.discussionId,message.content);
-  let parts = await this.discussionsService.getlistepartsfromdiscussion(message.discussionId)
+  let   parts   = await this.discussionsService.getlistepartsfromdiscussion(message.discussionId);
  const data = {
    newmsj : newmsj,
    parts:parts.parts
  }
- this.ServiceNotif.sendprivatemsj(data,message.senderId);
-  return response.status(HttpStatus.CREATED).json(newmsj);
-  
+
+ 
+ response.status(HttpStatus.CREATED).json(newmsj);
+ return this.ServiceNotif.sendprivatemsj(data,message.senderId); 
+
+ /* socket.emit("eventsupdated", JSON.stringify(data.newmsj));
+ dispatch(AutoRefreshDiscussion(res.data));
+ dispatch(AutoRefreshMessage(response.data.listemessagesBydiscussion));  */
+
 }    
 else{
   return response.status(HttpStatus.NOT_FOUND).json({message:"Can not post msj "});

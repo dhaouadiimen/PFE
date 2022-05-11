@@ -1,5 +1,4 @@
 
-//socket client : socket 
 import React from 'react'
 import Discussion from '../../components/discussions/Discussions'
 import Message from '../../components/message/Message'
@@ -11,6 +10,7 @@ import axios from 'axios';
 import {useDispatch } from 'react-redux';
 import {AutoRefreshDiscussion} from '../../Redux/Actions/discussion'
 import {AutoRefreshMessage} from '../../Redux/Actions/listeMessage'
+
 export default function Messenger() {
 const [newMessage,setNewMessage]=useState("");
 const [discussions,setDiscussions]=useState([]);
@@ -84,6 +84,12 @@ useEffect(() => {
   getMessages();
 }, [currentChat]);
 
+/* useEffect(() => {
+  socket.on('eventsupdated', payload => {
+      // update messages
+      useDispatch({ type:Refresh_Discu }, payload)
+  });
+}); */
 const handleSubmit = async (e) => {
   e.preventDefault();
   const message = {
@@ -91,7 +97,6 @@ const handleSubmit = async (e) => {
     content: newMessage,
     discussionId: currentChat._id,
   };
-  
   try {
     const res = await axios.post("http://localhost:3000/message/add", message);
     setMessages([...messages, res.data]);
@@ -99,9 +104,9 @@ const handleSubmit = async (e) => {
     setNewMessage("");
     const response = await axios.get("http://localhost:3000/message/" + currentChat?._id);
       setMessages(response.data.listemessagesBydiscussion);
-      //Redux 
-    dispatch(AutoRefreshDiscussion(res.data));
-    dispatch(AutoRefreshMessage(response.data.listemessagesBydiscussion));
+
+      dispatch(AutoRefreshDiscussion(res.data));
+      dispatch(AutoRefreshMessage(response.data.listemessagesBydiscussion)); 
     
   } 
   catch (err) {
