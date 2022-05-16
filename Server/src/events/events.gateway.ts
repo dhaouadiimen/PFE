@@ -87,7 +87,7 @@ export class EventsGateway  {
       if (userpart.accountId!==senderId)
       {
         return this.server.to(userpart.socketId).emit("events",data); 
-        // refresh liste msjs 
+       
        }
     })
   }

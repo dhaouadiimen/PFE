@@ -8,10 +8,9 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import Websocket from './websocket'
 import { io } from "socket.io-client";
 ReactDOM.render(
-
   <React.StrictMode>
       <AuthContextProvider>
-  <App />
+  <App/>
  
     </AuthContextProvider>
   </React.StrictMode>,

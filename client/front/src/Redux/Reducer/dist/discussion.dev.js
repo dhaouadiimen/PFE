@@ -21,3 +21,4 @@ export function discussionReducer(state = initialState, action) {
   }
 }
  */
+"use strict";

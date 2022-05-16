@@ -61,7 +61,6 @@ var EventsGateway = /** @class */ (function () {
             console.log("userpart", userpart);
             if (userpart.accountId !== senderId) {
                 return _this.server.to(userpart.socketId).emit("events", data);
-                // refresh liste msjs 
             }
         });
     };

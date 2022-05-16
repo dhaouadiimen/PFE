@@ -33,14 +33,13 @@ const Websocket = () => {
       });
       
       socket.on('events', function(data) {
-        
         console.log("--------------------------------------dataaaaaaaaaaaaaaaNotif",data);
         NotificationManager.success(data.newmsj.content, data.newmsj.senderId);
       
         // Notif +++++++++++++++++++++++++++ Refresh msjt ///////////////////////////////////
         
         dispatch(AutoRefreshDiscussion(data));
-        dispatch(AutoRefreshMessage());
+        dispatch(AutoRefreshMessage(data));
       });
       
       console.log("sockeeeeeeeeeeeeet",socket.Socket);
