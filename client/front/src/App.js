@@ -3,7 +3,6 @@ import {PersistGate} from 'redux-persist/integration/react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'react-notifications/lib/notifications.css';
-import { useContext } from "react";
 import {
     BrowserRouter,
     Routes,

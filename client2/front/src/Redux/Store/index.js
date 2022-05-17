@@ -17,9 +17,10 @@ export const persistConfig = {
   const persistedReducer = persistReducer(
     persistConfig,
     combineReducers({
-      discussion:discussionReducer,
+      listemessagesBydiscussion:listeMessageReducer,
+      //discussion:discussionReducer,
       profile:profileReducer,
-      listemessagesBydiscussion:listeMessageReducer
+     
       
     })
   );
@@ -43,13 +44,3 @@ export const persistConfig = {
     getState,
     persistor,
   };
-
- /*
- import { configureStore } from '@reduxjs/toolkit'
-import counterReducer from '../Reducer/discussion'
-
-export default configureStore({
-  reducer: {
-    discussion: discussionReducer
-  }
-})*/ 

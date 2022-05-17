@@ -43,6 +43,7 @@ const Messenger = (props) => {
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [listemessage]);
+
   useEffect(() => {
     setListemessage(props.listemessagesBydiscussion)
 
@@ -64,6 +65,19 @@ const Messenger = (props) => {
   };
   getMessages(); */
   }, [currentChat]);
+
+
+
+
+  useEffect(() => {
+    
+    //PostMessage(dispatch,currentChat?._id);
+    
+  
+  }, [currentChat]);
+
+
+
   /////////////////////////////////////////////// POST MESSAGE //////////////////////////////////////
 
   const handleSubmit = async (e) => {
@@ -75,28 +89,20 @@ const Messenger = (props) => {
     };
 
     try {
-      const res = await axios.post(
-        "http://localhost:3000/message/add",
-        message
-      );
+      const res = await axios.post("http://localhost:3000/message/add",message);
       setMessages([...listemessage, res.data]);
       console.log("res.dataaaaaaaaaaaaaaaaa", res.data);
       setNewMessage("");
       const response = await axios.get(
         "http://localhost:3000/message/" + currentChat?._id
       );
-      setMessages(response.data.listemessagesBydiscussion);
+      setListemessage(response.data.listemessagesBydiscussion);
 
-      /* dispatch(AutoRefreshDiscussion(res.data));
-    dispatch(AutoRefreshMessage(res.data.listemessagesBydiscussion)); 
-*/
     } catch (err) {
       console.log(err);
     }
   };
 
-
-console.log("salut hobyyyyyyyyyyyyyyyyyyyyyy",props?.listemessagesBydiscussion)
 
   return (
     <>
@@ -133,7 +139,6 @@ console.log("salut hobyyyyyyyyyyyyyyyyyyyyyy",props?.listemessagesBydiscussion)
                     autoComplete="on"
                   ></input>
                   <button className="chatSubmitButton" onClick={handleSubmit}>
-                    {/*     <button className="chatSubmitButton"   onClick={{handleSubmit},dispatch(AutoRefreshDiscussion()) ,dispatch(AutoRefreshMessage()) } > */}
                     Send
                   </button>
                 </div>

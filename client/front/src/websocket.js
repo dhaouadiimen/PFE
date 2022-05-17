@@ -5,8 +5,6 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import { NotificationManager} from 'react-notifications';
 import {io} from "socket.io-client";
 import {useDispatch } from 'react-redux';
-import { AutoRefreshMessage } from './Redux/Actions/listeMessage';
-import { MessageService } from './Services/messagesService';
 import { GetMessage } from './Redux/Utilities/utulityMsj';
 const Websocket = () => {
     const dispatch = useDispatch();
@@ -31,22 +29,11 @@ const Websocket = () => {
       
       socket.emit("addUser",{
         accountId :  "62752a322047424709a53c05",
-      });
-
-       
+      });      
       socket.on('events', function(data) {
         console.log("--------------------------------------dataaaaaaaaaaaaaaaNotif",data);
         NotificationManager.success(data.newmsj.content, data.newmsj.senderId);
-         GetMessage(dispatch,data.newmsj.discussionId);
-         //dispatch(AutoRefreshMessage(data))
-
-        // Notif +++++++++++++++++++++++++++ Refresh msjt ///////////////////////////////////
-      /*   dispatch(AutoRefreshDiscussion(data));
-        dispatch(AutoRefreshMessage(data)); */
-        
-        //MessageService("62752bb06681e4cd5428fb39");
-       
-        
+         GetMessage(dispatch,data.newmsj.discussionId);    
       });
       console.log("sockeeeeeeeeeeeeet",socket.Socket);
        return (

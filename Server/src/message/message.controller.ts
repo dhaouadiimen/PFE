@@ -21,9 +21,6 @@ export class MessageController {
     private readonly discussionsService: DiscussionsService,
     private readonly ServiceNotif: EventsGateway,
   ) {}
-  
-
-
   //////////////////////////////////////// 2/return list messages by discussion id xxxx//////////////////////////////////////
   @Get('/:id')
   async findById(@Res() response, @Param('id') id) {
@@ -84,14 +81,9 @@ if(check && check!=null){
    newmsj : newmsj,
    parts:parts.parts
  }
-
  response.status(HttpStatus.CREATED).json(newmsj);
- return this.ServiceNotif.sendprivatemsj(data,message.senderId); 
-
- /* socket.emit("eventsupdated", JSON.stringify(data.newmsj));
- dispatch(AutoRefreshDiscussion(res.data));
- dispatch(AutoRefreshMessage(response.data.listemessagesBydiscussion));  */
-
+ return this.ServiceNotif.sendprivatemsj(data,message.senderId);
+ 
 }    
 else{
   return response.status(HttpStatus.NOT_FOUND).json({message:"Can not post msj "});

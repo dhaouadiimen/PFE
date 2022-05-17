@@ -95,28 +95,3 @@ var EventsGateway = /** @class */ (function () {
     return EventsGateway;
 }());
 exports.EventsGateway = EventsGateway;
-/*
-  @SubscribeMessage('events')
-  handleEvent(client: Socket, data: string): string
-  {
-    console.log("testttttttttttttttttttttt",data)
-    return data
-    
-  } */
-/*
- @SubscribeMessage('msgToServer')
-public handleMessage(client: Socket, payload: any): Promise<WsResponse<any>> {
-  return this.server.to(payload.room).emit('msgToClient', payload);
-}
-
-@SubscribeMessage('joinRoom')
-public joinRoom(client: Socket, room: string): void {
-  client.join(room);
-  client.emit('joinedRoom', room);
-}
-
-@SubscribeMessage('leaveRoom')
-public leaveRoom(client: Socket, room: string): void {
-  client.leave(room);
-  client.emit('leftRoom', room);
-} */

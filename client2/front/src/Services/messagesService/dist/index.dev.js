@@ -4,7 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.MessageService = MessageService;
-exports.PostMessageService = PostMessageService;
 
 var _axios = _interopRequireDefault(require("axios"));
 
@@ -38,36 +37,6 @@ function MessageService(id) {
         case 12:
         case "end":
           return _context.stop();
-      }
-    }
-  }, null, null, [[0, 8]]);
-} ////////////////
-
-
-function PostMessageService() {
-  var response;
-  return regeneratorRuntime.async(function PostMessageService$(_context2) {
-    while (1) {
-      switch (_context2.prev = _context2.next) {
-        case 0:
-          _context2.prev = 0;
-          _context2.next = 3;
-          return regeneratorRuntime.awrap(_axiosInstance.isAuthInstance.post((0, _Urls.PostMessageUrl)()));
-
-        case 3:
-          response = _context2.sent;
-          console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", response);
-          return _context2.abrupt("return", response);
-
-        case 8:
-          _context2.prev = 8;
-          _context2.t0 = _context2["catch"](0);
-          console.log('resp errro====>', _context2.t0);
-          return _context2.abrupt("return", _context2.t0);
-
-        case 12:
-        case "end":
-          return _context2.stop();
       }
     }
   }, null, null, [[0, 8]]);
