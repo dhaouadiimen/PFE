@@ -37,3 +37,6 @@ EXPOSE 3000
 # la commande a excuter pour lancer le projet ( pour créer container)
 
 CMD [ "npm", "run","start:dev" ]
+#pour creer une image docker il faut taper cette commande : docker build-t nom_image:version /path/to/Dockerfile
+
+#pour lancer une container docker il faut taper cette commander : docker run -it -d (#background)  --name name_of_container -p port_of_pc:port_exposed name_of_image  
